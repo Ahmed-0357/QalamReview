@@ -13,8 +13,6 @@ st.markdown('#')
 st.write(st.session_state)
 
 # check session state
-if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '':
+if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '' or st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
     st.error(
         'Please complete the initial configuration on the main page first.', icon="🚨")
-
-st.write(st.session_state)

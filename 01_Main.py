@@ -1,7 +1,6 @@
 import streamlit as st
+from streamlit_extras.buy_me_a_coffee import button
 from streamlit_extras.switch_page_button import switch_page
-
-import st_app_func as saf
 
 # config
 st.set_page_config(page_title="auto review", page_icon=":book:",     layout="centered",
@@ -25,15 +24,17 @@ st.session_state['google_api'] = ''
 st.sidebar.header('🔧 Initial Configuration')
 st.sidebar.subheader('OpenAI')
 # api key
-openai_api = st.sidebar.text_input("API key", type='password')
+openai_api = st.sidebar.text_input(
+    "API key", type='password')
 # model
 openai_model_opt = st.sidebar.selectbox(
     'Model',
-    ('', 'GPT-4', 'GPT-3.5'))
+    ('gpt-3.5-turbo', 'gpt-4'))
 
 st.sidebar.subheader('Google')
 # api key
-google_api = st.sidebar.text_input("API Key", type='password')
+google_api = st.sidebar.text_input(
+    "API Key", type='password')
 
 # update session
 if openai_api != '':
@@ -51,7 +52,7 @@ st.markdown(
     
     <p style='font-size: 18px;'><b>Here's how it works:</b></p>
 
-    <p style='font-size: 18px;'>🔍 <b>Search:</b> my tool begins by creating an outline of the paper, or you can upload your own.</p>
+    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> my tool begins by creating an outline of the paper, or you can upload your own.</p>
 
     <p style='font-size: 18px;'>🌐 <b>Internet Surfing:</b> It then scours the internet for the most relevant academic papers that match your topic and outline.</p>
 
@@ -70,8 +71,10 @@ if st.button('Start the Magic ✨'):
 st.markdown(
     """
     ---
-    💡 **Need help?** For more information about how to use this tool, please visit our [github](#).
+    💡 **Need help?** For more information about how to use this tool, please visit our [github](https://github.com/Ahmed-0357/autoreviewpaper).
     
-    👩‍💻 **About me:** I'm an AI enthusiast and researcher who decided to make academic work a piece of cake. So, you're welcome! 😄 Learn more [about me](https://github.com/Ahmed-0357).
+    👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://github.com/Ahmed-0357).
     """
 )
+
+button(username="fake-username", floating=False, width=221)

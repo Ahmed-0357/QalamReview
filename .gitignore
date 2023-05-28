@@ -1,1 +1,9 @@
 envs
+*env*/**
+.idea*/**
+.vscode*/**
+*__pycache__*
+*/__pycache__/
+**/**/*.pyc
+*.pyc
+__pycache__/*
