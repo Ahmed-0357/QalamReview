@@ -14,10 +14,6 @@ st.set_page_config(page_title=page_title, page_icon=page_icon)
 
 # st.write(st.session_state)
 
-llm = ChatOpenAI(
-    openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
-
-
 # title
 html_title = '<h1 align="center"> <b> 💡 Let Us Make The Perfect Paper\'s Outline </b></h1>'
 st.markdown(html_title, unsafe_allow_html=True)
@@ -27,6 +23,7 @@ st.markdown('#')
 if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '':
     st.error(
         'Please complete the initial configuration on the main page first.', icon="🚨")
+
 
 else:
     # session state
@@ -45,7 +42,7 @@ else:
     st.markdown(
         "Please list the areas of expertise that will guide the AI to create more refined and tailored paper.")
     expertise_areas = st.text_input(
-        '', placeholder="example: senior reservoir engineer,  senior  petroleum engineer, CO2 storage specialist", label_visibility='collapsed')
+        '', placeholder="example: reservoir engineering,  petroleum engineering, CO2 storage, enhanced oil recovery", label_visibility='collapsed')
 
     # update session
     st.session_state['paper_title'] = subject
@@ -60,11 +57,11 @@ else:
         outline_user = json.load(outline_file)
         st.session_state['paper_outline'] = outline_user
 
-    st.markdown('###')
+    st.markdown('####')
     # show and download sample
     with open(os.path.join('files', 'outline_sample.json'), 'r') as json_file:
         outline_sample = json_file.read()
-    if st.checkbox('show outline sample'):
+    if st.checkbox('Show outline sample'):
         st.json(outline_sample)
     st.download_button(
         label="Download sample file",
@@ -73,26 +70,33 @@ else:
         mime='application/json',
     )
 
-    st.markdown("###")
+    st.markdown("##")
     # AI Generated Outline
     st.markdown("### 🧠 AI Generated Outline")
     st.markdown(
         "If you wish to generate an outline for your paper using AI, check the botton below.")
 
-    if st.button('Generate'):
-        # session check
-        if st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '':
-            st.error(
-                'Please complete the paper title and areas of expertise first.', icon="🚨")
-        else:
-            with st.spinner('Wait for it...'):
-                chat_prompt = saf.generate_outline_prompt()
-                chain = LLMChain(llm=llm, prompt=chat_prompt)
-                result = chain.run(expertise_areas=expertise_areas,
-                                   subject=subject, outline_format=saf.outline_format)
+    if st.checkbox('Start AI generated outline'):
+        # st.markdown("#####")
+        elaborate_user = st.text_area('Elaborate your needs (optional)',
+                                      placeholder='''example: focus on comparing traditional and modern methods in the field, and include a detailed discussion on recent experimental results.''')
 
-                result_dict = ast.literal_eval(result)
-                st.json(result_dict)
+        if st.button('Generate'):
+            # session check
+            if st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '':
+                st.error(
+                    'Please complete the paper title and areas of expertise first.', icon="🚨")
+            else:
+                with st.spinner('Wait for it...'):
+                    llm = ChatOpenAI(
+                        openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
+                    chat_prompt = saf.generate_outline_prompt()
+                    chain = LLMChain(llm=llm, prompt=chat_prompt)
+                    result = chain.run(expertise_areas=expertise_areas,
+                                       subject=subject, elaborate_user=elaborate_user, outline_format=saf.outline_format)
 
-                # update session
-                st.session_state['paper_outline'] = result_dict
+                    result_dict = ast.literal_eval(result)
+                    st.json(result_dict)
+
+                    # update session
+                    st.session_state['paper_outline'] = result_dict

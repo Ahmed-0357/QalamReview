@@ -65,7 +65,7 @@ st.markdown(
 
 # Action Buttons
 if st.button('Start the Magic ✨'):
-    switch_page('Outlines')
+    switch_page('Outline')
 
 # Footer
 st.markdown(
@@ -77,4 +77,4 @@ st.markdown(
     """
 )
 
-button(username="fake-username", floating=False, width=221)
+button(username="ahmedabdulS", floating=False, width=221)

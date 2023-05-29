@@ -10,9 +10,13 @@ html_title = '<h1 align="center"> <b> Let Us Find The Most Relevant Papers </b><
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown('#')
 
-st.write(st.session_state)
+# st.write(st.session_state)
 
 # check session state
-if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '' or st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
+if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '':
     st.error(
         'Please complete the initial configuration on the main page first.', icon="🚨")
+elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
+
+    st.error(
+        'Please first fill paper title, areas of expertise and paper outlines on Outline page.', icon="🚨")
