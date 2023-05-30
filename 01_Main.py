@@ -19,6 +19,7 @@ st.markdown('#')
 st.session_state['openai_api'] = ''
 st.session_state['openai_model_opt'] = ''
 st.session_state['google_api'] = ''
+st.session_state['google_search_engine_id'] = ''
 
 # initial config
 st.sidebar.header('🔧 Initial Configuration')
@@ -35,6 +36,8 @@ st.sidebar.subheader('Google')
 # api key
 google_api = st.sidebar.text_input(
     "API Key", type='password')
+google_search_engine_id = st.sidebar.text_input(
+    "Search Engine ID", type='password')
 
 # update session
 if openai_api != '':
@@ -43,6 +46,8 @@ if openai_model_opt != '':
     st.session_state['openai_model_opt'] = openai_model_opt
 if google_api != '':
     st.session_state['google_api'] = google_api
+if google_search_engine_id != '':
+    st.session_state['google_search_engine_id'] = google_search_engine_id
 
 
 # Introduction about the app
@@ -78,3 +83,7 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+openai_key = "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"
+google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
+cse_id = "90421513b2347450d"
