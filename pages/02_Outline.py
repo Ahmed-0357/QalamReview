@@ -70,7 +70,7 @@ else:
         mime='application/json',
     )
 
-    st.markdown("##")
+    st.markdown("---")
     # AI Generated Outline
     st.markdown("### 🧠 AI Generated Outline")
     st.markdown(

@@ -83,7 +83,3 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
-
-openai_key = "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"
-google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
-cse_id = "90421513b2347450d"

@@ -107,3 +107,19 @@ def search_parsing_prompt():
         [system_message_prompt, human_message_prompt])
 
     return chat_prompt
+
+
+def combine_search_term(search_term):
+    """Custom aggregation function to concatenate unique search terms.
+
+    Args:
+        search_term (list): List of search terms.
+
+    Returns:
+        str: Concatenated search terms separated by commas if there are multiple terms, or the single term if there is only one.
+    """
+    unique_search_term = set(search_term)
+    if len(unique_search_term) > 1:
+        return ', '.join(unique_search_term)
+    else:
+        return list(unique_search_term)[0]

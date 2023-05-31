@@ -1,12 +1,13 @@
 import ast
+import base64
 import time
 
+import dateparser
 import pandas as pd
 import st_app_func as saf
 import streamlit as st
 from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
-from streamlit_extras.stateful_button import button
 
 # config
 page_title = "paper search - Train"
@@ -37,12 +38,12 @@ else:
     years_back = st.slider('Number of past years for the search', min_value=1,
                            max_value=60, value=20, step=1)
 
-    if st.button('Run papers search'):
+    if st.button('Start Web Search'):
         # df contains all papers
         all_df = []
 
         # create search terms
-        with st.spinner('1. Creating search terms ...'):
+        with st.spinner('🧠 Creating search terms. please wait...'):
             llm = ChatOpenAI(
                 openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
             chat_prompt = saf.search_terms_prompt()
@@ -58,7 +59,7 @@ else:
         # search papers according to search terms
         for i in range(saf.num_search_terms):
             k = search_terms_dict[i+1]
-            with st.spinner(f'{i+2}. Searching for journal papers related to {k} ...'):
+            with st.spinner(f'🔎 Searching for journal papers related to {k.lower()}. please wait...'):
                 list_dict = []
                 # google search
                 search_results = saf.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
@@ -78,13 +79,31 @@ else:
                 # display dfs
                 df = pd.DataFrame(list_dict)
                 df['search_term'] = k
-                st.write(f'Papers related to {k}')
+                st.write(f'Papers on {k.lower()}')
                 st.dataframe(df)
                 all_df.append(df)
                 st.write('####')
 
         # final df with all papers
         df_final = pd.concat(all_df)
+
+        # data cleaning (none, data and remove duplicates)
+        df_final.replace("None", "", inplace=True)
+        df_final['publishing date'] = df_final['publishing date'].apply(
+            lambda x: dateparser.parse(str(x)))
+
+        # remove duplicate papers and combine search term
+        df_final = df_final.groupby(df_final.columns.tolist()[
+            :-1], as_index=False).agg({df_final.columns.tolist()[-1]: saf.combine_search_term})
+
+        # add id column
         df_final.insert(0, 'ID', range(1, 1 + len(df_final)))
-        st.write('### 📄 List of Related Papers')
+        st.write('### 📑 Relevant Paper List')
         st.dataframe(df_final)
+
+        # Convert DataFrame to CSV for download
+        csv = df_final.to_csv(index=False)
+        # Convert CSV string to bytes
+        b64 = base64.b64encode(csv.encode()).decode()
+        href = f'<a href="data:text/csv;base64,{b64}" download="relevant_papers.csv">Download as CSV</a>'
+        st.markdown(href, unsafe_allow_html=True)
