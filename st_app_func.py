@@ -59,9 +59,9 @@ def search_terms_prompt():
         str: prompt string
     """
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You have strong background in the field(s) of {expertise_areas}, also your have specialty in academic research and internet searching for the most relevant academic papers needed for writing review paper about {subject}. You excel at developing google search terms guided by this review paper's outline.")
+        "You possess a solid foundation in the field(s) of {expertise_areas} along with an expert capability in academic research. You have the ability to identify and collate the most pertinent academic papers required for constructing a review paper on {subject}. Your forte lies in developing targeted Google search terms that align with the framework provided by the review paper's outline")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """Given the existing outline "{outline}", formulate {num_search_terms} Google search terms that would yield the most relevant academic papers. Present these terms as a Python dictionary using this format {search_terms_formate}.""")
+        """In alignment with the directives provided in the review paper's outline "{outline}", your task is to devise exactly {num_search_terms} distinct Google search terms. These search terms should be designed to effectively lead to the most relevant academic papers for our review paper. Please present these terms in the following Python dictionary format: {search_terms_formate}.""")
 
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt])

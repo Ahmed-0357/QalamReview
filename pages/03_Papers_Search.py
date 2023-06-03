@@ -2,7 +2,8 @@ import ast
 import base64
 import time
 
-import dateparser
+# import dateparser
+import numpy as np
 import pandas as pd
 import st_app_func as saf
 import streamlit as st
@@ -10,7 +11,7 @@ from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 
 # config
-page_title = "paper search - Train"
+page_title = "paper search"
 page_icon = ":mag_right:"
 st.set_page_config(page_title=page_title, page_icon=page_icon)
 
@@ -74,7 +75,7 @@ else:
                         paper_html=paper, journal_info_format=saf.journal_info_format)
                     ppaper_dict = ast.literal_eval(ppaper)
                     list_dict.append(ppaper_dict)
-                    time.sleep(21)
+                    time.sleep(2)
 
                 # display dfs
                 df = pd.DataFrame(list_dict)
@@ -89,8 +90,8 @@ else:
 
         # data cleaning (none, data and remove duplicates)
         df_final.replace("None", "", inplace=True)
-        df_final['publishing date'] = df_final['publishing date'].apply(
-            lambda x: dateparser.parse(str(x)))
+        df_final['publishing date'] = df['publishing date'].apply(
+            lambda x: pd.to_datetime(x, errors='coerce') if pd.notnull(x) else pd.NaT)
 
         # remove duplicate papers and combine search term
         df_final = df_final.groupby(df_final.columns.tolist()[

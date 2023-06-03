@@ -1,4 +1,5 @@
 import ast
+import base64
 import json
 import os
 
@@ -8,7 +9,7 @@ from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 
 # config
-page_title = "paper outline - Train"
+page_title = "paper outline"
 page_icon = ":bulb:"
 st.set_page_config(page_title=page_title, page_icon=page_icon)
 
@@ -37,6 +38,7 @@ else:
         "Provide a comprehensive title for the review paper you wish to create.")
     subject = st.text_input(
         '', placeholder='example: The Impact of CO2 Diffusion Mechanism on Underground CO2 Storage in Aquifers', label_visibility='collapsed')
+    subject = subject.title()
 
     st.markdown("### 📚 Areas of Expertise")
     st.markdown(
@@ -63,12 +65,12 @@ else:
         outline_sample = json_file.read()
     if st.checkbox('Show outline sample'):
         st.json(outline_sample)
-    st.download_button(
-        label="Download sample file",
-        data=outline_sample,
-        file_name='outline_sample.json',
-        mime='application/json',
-    )
+
+    # download outline sample
+    json_str = json.dumps(outline_sample)
+    b64 = base64.b64encode(json_str.encode()).decode()
+    href = f'<a href="data:application/json;base64,{b64}" download="outline_sample.json">Download outline sample</a>'
+    st.markdown(href, unsafe_allow_html=True)
 
     st.markdown("---")
     # AI Generated Outline
@@ -100,3 +102,9 @@ else:
 
                     # update session
                     st.session_state['paper_outline'] = result_dict
+
+                    # download generated outline
+                    json_gen = json.dumps(result_dict)
+                    b64_g = base64.b64encode(json_gen.encode()).decode()
+                    href = f'<a href="data:application/json;base64,{b64_g}" download="outline_generated.json">Download generated outline</a>'
+                    st.markdown(href, unsafe_allow_html=True)
