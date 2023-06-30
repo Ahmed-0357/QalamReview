@@ -93,18 +93,28 @@ else:
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
                     chat_prompt = saf.generate_outline_prompt()
-                    chain = LLMChain(llm=llm, prompt=chat_prompt)
-                    result = chain.run(expertise_areas=expertise_areas,
-                                       subject=subject, elaborate_user=elaborate_user, outline_format=saf.outline_format)
 
-                    result_dict = ast.literal_eval(result)
-                    st.json(result_dict)
+                    try:
+                        chain = LLMChain(llm=llm, prompt=chat_prompt)
+                        result = chain.run(expertise_areas=expertise_areas,
+                                           subject=subject, elaborate_user=elaborate_user, outline_format=saf.outline_format)
+                    except Exception as e:
+                        st.error(
+                            f'An unexpected error has occurred: {e}, icon="🚨"')
+                    else:
+                        try:
+                            result_dict = ast.literal_eval(result)
+                            st.json(result_dict)
+                        except:
+                            st.error(
+                                'An unexpected error has occurred please click Generate button again', icon="🚨")
+                        else:
+                            # update session
+                            st.session_state['paper_outline'] = result_dict
 
-                    # update session
-                    st.session_state['paper_outline'] = result_dict
-
-                    # download generated outline
-                    json_gen = json.dumps(result_dict)
-                    b64_g = base64.b64encode(json_gen.encode()).decode()
-                    href = f'<a href="data:application/json;base64,{b64_g}" download="outline_generated.json">Download generated outline</a>'
-                    st.markdown(href, unsafe_allow_html=True)
+                            # download generated outline
+                            json_gen = json.dumps(result_dict)
+                            b64_g = base64.b64encode(
+                                json_gen.encode()).decode()
+                            href = f'<a href="data:application/json;base64,{b64_g}" download="outline_generated.json">Download generated outline</a>'
+                            st.markdown(href, unsafe_allow_html=True)

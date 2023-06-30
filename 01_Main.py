@@ -8,9 +8,10 @@ st.set_page_config(page_title="auto review", page_icon=":book:",     layout="cen
 
 # title
 html_title = '<h1 align="center"> <b> 📖 Auto Review </b></h1>'
+
 st.markdown(html_title, unsafe_allow_html=True)
 # title
-html_title = '<h2 align="center"> <b> generate up to date review papers in any topic of your choice! </b></h2>'
+html_title = '<h2 align="center"> <b> generate up to date narrative review paper in any topic of your choice! </b></h2>'
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown('#')
 
@@ -35,7 +36,7 @@ openai_model_opt = st.sidebar.selectbox(
 st.sidebar.subheader('Google')
 # api key
 google_api = st.sidebar.text_input(
-    "API Key", type='password')
+    "Search API Key", type='password')
 google_search_engine_id = st.sidebar.text_input(
     "Search Engine ID", type='password')
 
@@ -53,17 +54,15 @@ if google_search_engine_id != '':
 # Introduction about the app
 st.markdown(
     """
-    <p style='font-size: 18px;'>This powerful tool leverages advanced AI technology to create automatic review papers on any topic of your choice.</p>
-    
     <p style='font-size: 18px;'><b>Here's how it works:</b></p>
 
-    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> my tool begins by creating an outline of the paper, or you can upload your own.</p>
+    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> The app generates or accepts a paper's outline.</p>
 
-    <p style='font-size: 18px;'>🌐 <b>Internet Surfing:</b> It then scours the internet for the most relevant academic papers that match your topic and outline.</p>
+    <p style='font-size: 18px;'>🌐 <b>Internet Search: </b>It then searches the internet for relevant academic papers.</p>
 
-    <p style='font-size: 18px;'>📚 <b>Generation:</b> Finally, it produces a comprehensive review paper by summarizing and connecting the findings from these papers.</p>
+    <p style='font-size: 18px;'>📚 <b>Paper Writing:</b> Finally, it creates a narrative review paper, summarizing the findings from the selected scholarly papers</p><br>
 
-    <p style='font-size: 18px;'>Simply Fill the initial configuration and relax. my tool generates comprehensive, well-structured review papers, saving you valuable time</p>
+    <p style='font-size: 18px;'>Simply Fill the <b>initial configuration</b> and relax, this app will generate comprehensive, well-structured narrative review papers, saving you valuable time</p>
     """, unsafe_allow_html=True
 )
 
@@ -76,9 +75,14 @@ if st.button('Start the Magic ✨'):
 st.markdown(
     """
     ---
-    💡 **Need help?** For more information about how to use this tool, please visit our [github](https://github.com/Ahmed-0357/autoreviewpaper).
+    💡 **Need help?** For comprehensive guidance on using this tool, we encourage you to refer to our detailed documentation available on our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper).
     
+    🤝 **Contribute to the Project:** This project is open source and exists for the benefit of the community. If would like to make a contribution, simply head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), initiate a fork, and commence your creative contributions.
+    
+    ---
     👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://github.com/Ahmed-0357).
+    
+    💖 **Support my work:** If you find value in this and want to contribute to my efforts, you can support me by clicking the link below.
     """
 )
 

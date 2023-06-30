@@ -23,16 +23,10 @@ journal_info_format = {
     "title": "",
     "author(s)": "",
     "publishing date": "",
-    "abstract": "",
     "journal": "",
+    "abstract": "",
     "link": ""
 }
-
-# search terms format
-search_terms_formate = """{1: 'search_term_1', 2: 'search_term_2', 3: 'search_term_3', ....}"""
-
-# number of search terms
-num_search_terms = 2
 
 
 def generate_outline_prompt():
@@ -42,9 +36,9 @@ def generate_outline_prompt():
         str: prompt string
     """
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You have exceptional proficiency in the area(s) of {expertise_areas}, also you are specialized in creating well-structured outlines for review papers that meet the rigorous standards of top academic journals")
+        "You have exceptional proficiency in the area(s) of {expertise_areas}, also you are specialized in creating outlines for narrative review papers that meet the rigorous standards of top academic journals")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """Create an outline for academic review papers on the topic of "{subject}". Please ensure you integrate these specific criteria "{elaborate_user}" into your outline formation process. Follow this format: {outline_format} and include as many sections as necessary to thoroughly cover the topic. For the final output, please structure the outline as a Python dictionary""")
+        """Create an outline for narrative review papers on the topic of "{subject}". Please ensure you integrate these specific criteria "{elaborate_user}" into your outline formation process. Follow this format: {outline_format} and include as many sections as necessary to thoroughly cover the topic. For the final output, please structure the outline as a Python dictionary""")
 
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt])
@@ -59,9 +53,9 @@ def search_terms_prompt():
         str: prompt string
     """
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You possess a solid foundation in the field(s) of {expertise_areas} along with an expert capability in academic research. You have the ability to identify and collate the most pertinent academic papers required for constructing a review paper on {subject}. Your forte lies in developing targeted Google search terms that align with the framework provided by the review paper's outline")
+        "You possess a solid foundation in the field(s) of {expertise_areas} along with an expert capability in academic research. You have the ability to identify and collate the most pertinent academic papers required for constructing narrative review paper on {subject}. Your forte lies in developing targeted Google search terms that align with the framework provided by the narrative review paper's outline")
     human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """In alignment with the directives provided in the review paper's outline "{outline}", your task is to devise exactly {num_search_terms} distinct Google search terms. These search terms should be designed to effectively lead to the most relevant academic papers for our review paper. Please present these terms in the following Python dictionary format: {search_terms_formate}.""")
+        """In alignment with the directives provided in the narrative review paper's outline "{outline}", your task is to give me only {num_search_terms} distinct Google search terms. These search terms should be designed to effectively lead to the most relevant academic papers for my narrative review paper. Please present these/this term(s) as a python list""")
 
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt])
@@ -107,19 +101,3 @@ def search_parsing_prompt():
         [system_message_prompt, human_message_prompt])
 
     return chat_prompt
-
-
-def combine_search_term(search_term):
-    """Custom aggregation function to concatenate unique search terms.
-
-    Args:
-        search_term (list): List of search terms.
-
-    Returns:
-        str: Concatenated search terms separated by commas if there are multiple terms, or the single term if there is only one.
-    """
-    unique_search_term = set(search_term)
-    if len(unique_search_term) > 1:
-        return ', '.join(unique_search_term)
-    else:
-        return list(unique_search_term)[0]
