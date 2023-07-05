@@ -3,7 +3,7 @@ import base64
 import json
 import os
 
-import st_app_func as saf
+import st_outline_search_func as sos
 import streamlit as st
 from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
@@ -92,12 +92,12 @@ else:
                 with st.spinner('Wait for it...'):
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
-                    chat_prompt = saf.generate_outline_prompt()
+                    chat_prompt = sos.generate_outline_prompt()
 
                     try:
                         chain = LLMChain(llm=llm, prompt=chat_prompt)
                         result = chain.run(expertise_areas=expertise_areas,
-                                           subject=subject, elaborate_user=elaborate_user, outline_format=saf.outline_format)
+                                           subject=subject, elaborate_user=elaborate_user, outline_format=sos.outline_format)
                     except Exception as e:
                         st.error(
                             f'An unexpected error has occurred: {e}, icon="🚨"')

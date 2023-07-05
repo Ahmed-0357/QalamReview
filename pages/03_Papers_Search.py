@@ -2,10 +2,8 @@ import ast
 import base64
 import time
 
-# import dateparser
-import numpy as np
 import pandas as pd
-import st_app_func as saf
+import st_outline_search_func as sos
 import streamlit as st
 from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
@@ -50,10 +48,10 @@ else:
         all_df = []
 
         # create search terms
-        with st.spinner('🧠 Creating search terms. please wait...'):
+        with st.spinner('🧠 Creating search terms. Please wait...'):
             llm = ChatOpenAI(
                 openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
-            chat_prompt = saf.search_terms_prompt()
+            chat_prompt = sos.search_terms_prompt()
             chain = LLMChain(llm=llm, prompt=chat_prompt)
             search_terms = chain.run(expertise_areas=st.session_state['expertise_areas'],
                                      subject=st.session_state['paper_title'], outline=st.session_state['paper_outline'],
@@ -68,26 +66,26 @@ else:
                 st.write('####')
                 st.write('Search terms to use')
                 st.json(search_terms_list)
-                
+
         st.write('####')
         # search papers according to search terms
         for i in range(num_search_terms):
             k = search_terms_list[i]
-            with st.spinner(f'🔎 Searching for journal papers related to {k.lower()}. please wait...'):
+            with st.spinner(f'🔎 Searching for journal papers related to {k.lower()}. Please wait...'):
                 list_dict = []
                 # google search
-                search_results = saf.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
+                search_results = sos.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
                                                    'google_api'], cse_id=st.session_state['google_search_engine_id'], total_results=total_results, dateRestrict=f'y{years_back}')
                 # parsing
                 for paper in search_results:
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state['openai_api'], temperature=0, model_name=st.session_state['openai_model_opt'])
-                    chat_prompt = saf.search_parsing_prompt()
+                    chat_prompt = sos.search_parsing_prompt()
                     # in case of tokens higher than 4k
                     try:
                         chain = LLMChain(llm=llm, prompt=chat_prompt)
                         ppaper = chain.run(
-                            paper_html=paper, journal_info_format=saf.journal_info_format)
+                            paper_html=paper, journal_info_format=sos.journal_info_format)
                         ppaper_dict = ast.literal_eval(ppaper)
                     except:
                         time.sleep(2)

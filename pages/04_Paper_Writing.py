@@ -1,8 +1,12 @@
-import io
 import os
+import time
 
 import pandas as pd
+import st_paper_writing_func as spw
 import streamlit as st
+from langchain.chat_models import ChatOpenAI
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import TokenTextSplitter
 
 # config
 page_title = "paper writing"
@@ -25,9 +29,9 @@ elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'
     st.error(
         'Please first fill paper title, areas of expertise and paper outlines on Outline page.', icon="🚨")
 else:
-    st.markdown("### 📚 Journal Papers")
+    st.markdown("### 📝 Journal Papers")
     st.markdown(
-        "Upload downloaded journal papers which will be utilized in the composition of your review paper.")
+        "Upload downloaded journal papers which will be utilized in the composition of your narrative review paper.")
 
     uploaded_papers = st.file_uploader("",
                                        type=['pdf'],
@@ -42,36 +46,70 @@ else:
         for uploaded_paper in uploaded_papers:
             try:
                 # Create a temporary file and write the uploaded file's bytes to it
-                with open(f'{papers_dir}/{uploaded_paper.name}', 'wb') as f:
+                with open(os.path.join(papers_dir, uploaded_paper.name), 'wb') as f:
                     f.write(uploaded_paper.getbuffer())
 
             except:
                 continue
 
-    st.markdown("### 📚 Papers Metadata")
-    st.markdown(
-        "Upload papers metadata which will be used for papers citing")
-    # File uploader for metadata
-    uploaded_metadata = st.file_uploader(
-        "", type=['csv'], label_visibility="collapsed")
+    st.markdown("####")
+    generate_button = st.button('Generate')
+    if generate_button and not uploaded_papers:
+        st.error('Please upload journal papers before generating. 🚨')
+    elif generate_button:
+        # outline list and dict
+        outline_list = [
+            f"{main_key}: {sub_key}: {list(item.values())[0]}"
+            for main_key, main_value in st.session_state['paper_outline'].items()
+            for sub_key, sub_value in main_value.items()
+            for item in sub_value
+        ]
 
-    # Directory to save files
-    meta_dir = 'metadata'
+        # summary spinner
+        with st.spinner('**🖋️ Working on summarizing the papers. Please wait...**'):
+            # dir to and file to save summary
+            dir_name = "summary"
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name)
+            file_name = "papers_summary.txt"
+            full_path = os.path.join(dir_name, file_name)
 
-    # Ensure directory exists
-    os.makedirs(meta_dir, exist_ok=True)
+            # llm model instantiation
+            model_name = st.session_state['openai_model_opt']+'-16k'
+            chat = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
+                              temperature=0, model_name=model_name)
+            # imput dict
+            input_dict = {'llm_model': chat, 'expertise_areas': st.session_state[
+                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+            # loop through papers
+            for paper_path in os.listdir(papers_dir):
+                with st.spinner(f'Summarizing {paper_path} ...'):
+                    # read paper content
+                    loader = PyPDFLoader(os.path.join(papers_dir, paper_path))
+                    pages = loader.load_and_split()
+                    paper_content = ''.join(
+                        page.page_content for page in pages)
 
-    # If there is an uploaded file
-    if uploaded_metadata:
-        try:
-            # Save the uploaded file
-            meta_file_path = os.path.join(meta_dir, uploaded_metadata.name)
-            with open(meta_file_path, 'wb') as f:
-                f.write(uploaded_metadata.getbuffer())
-        except:
-            st.error(
-                f'Error reading metadata file', icon="🚨")
-        else:
-            meta = pd.read_csv(meta_file_path)
-            st.write(meta)
-            st.dataframe(meta)
+                    # split paper token wise (12k token)
+                    text_splitter = TokenTextSplitter(
+                        chunk_size=12000, chunk_overlap=0)
+                    texts = text_splitter.split_text(paper_content)
+
+                    try:
+                        # summarization class
+                        summ = spw.PaperSummary(texts)
+                        output = summ.summarize(**input_dict)
+
+                    except Exception as e:
+                        st.write(e)
+                        continue
+                    else:
+                        st.json(output)
+                        with open(full_path, 'a') as file:
+                            file.write(str(output)+'\n\n')
+
+                    time.sleep(9)
+
+        # relevance analysis spinner
+        with st.spinner('** 🥇 Working on summarizing the papers. Please wait...**'):
+            # dir to and file to save summary
