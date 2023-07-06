@@ -94,39 +94,35 @@ class PaperSummary:
         Returns:
             dict: paper summary in the specified format
         """
-        llm_model = kwargs.get('llm_model')
-        expertise_areas = kwargs.get('expertise_areas')
-        subject = kwargs.get('subject')
-        outline = kwargs.get('outline')
-
+        
         if len(self.texts) == 1:
             chat_prompt = self.paper_summary_prompt(p_type='once')
-            chain = LLMChain(llm=llm_model, prompt=chat_prompt)
+            chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
 
-            output = chain.run(expertise_areas=expertise_areas, subject=subject, outline=outline,
+            output = chain.run(expertise_areas=kwargs.get('expertise_areas'), subject=kwargs.get('subject'), outline=kwargs.get('outline'),
                                paper_content=self.texts[0], summarize_format=self.summarize_format)
         else:
             section_summary = {}
             for i in range(len(self.texts)):
                 if i == 0:
                     chat_prompt = self.paper_summary_prompt(p_type='many1')
-                    chain = LLMChain(llm=llm_model, prompt=chat_prompt)
-                    r = chain.run(expertise_areas=expertise_areas,
+                    chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+                    r = chain.run(expertise_areas=kwargs.get('expertise_areas'),
                                   paper_content=self.texts[i])
                     section_summary[i] = r
                 else:
                     chat_prompt = self.paper_summary_prompt(p_type='many2')
-                    chain = LLMChain(llm=llm_model, prompt=chat_prompt)
-                    r = chain.run(expertise_areas=expertise_areas,
+                    chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+                    r = chain.run(expertise_areas=kwargs.get('expertise_areas'),
                                   paper_content=self.texts[i])
                     section_summary[i] = r
 
                     time.sleep(9)
 
             chat_prompt = self.paper_summary_prompt(p_type='once')
-            chain = LLMChain(llm=llm_model, prompt=chat_prompt)
+            chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
             all_sections = ' '.join(list(section_summary.values()))
-            output = chain.run(expertise_areas=expertise_areas, subject=subject, outline=outline,
+            output = chain.run(expertise_areas=kwargs.get('expertise_areas'), subject=kwargs.get('subject'), outline=kwargs.get('outline'),
                                paper_content=all_sections, summarize_format=self.summarize_format)
 
         output_dict = ast.literal_eval(output)
@@ -142,7 +138,7 @@ class RelevanceAnalysis:
         Args:
             paper_summary (dict): paper summary
         """
-        self.paper_summary = paper_summary
+        self.paper_summary = str(paper_summary)
         
     def relevancy_analysis_prompt(self):
         """relevancy prompt
@@ -153,15 +149,26 @@ class RelevanceAnalysis:
             """Equipped with substantial expertise in {expertise_areas}, you're an accomplished researcher renowned for crafting insightful narrative review papers and conducting thorough assessments of journal paper summaries.
             Your task harnesses your unique aptitude for aligning the essence of a journal summary with the framework of a narrative review paper. Apply your knowledge and experience to successfully complete this assignment.""")
         human_message_prompt = HumanMessagePromptTemplate.from_template(
-            """With the provided summary of a specific paper {paper_summary} and the outline of a narrative review paper {outline} titled {subject}, your mission is to determine which main section of the review most closely aligns with the paper.
-            Conduct a thorough analysis of the content, mapping it to the most relevant section(s) within the review outline.
-            For each identified section, allot a similarity score ranging from 0 to 100, where 100 indicates strong relevance
-            and 0 implies no relevance. Compile your results in a Python dictionary,
-            adhering strictly to the provided format {relevance_format}""")
+            """Given a summary of a specific research paper {paper_summary} and the outline of a narrative review paper {outline}, titled {subject}, your task is to evaluate the relevance of the paper's content in relation to each and every section of the review paper's outline. Relevance should be scored from 0 to 100, where 100 indicates strong relevance and 0 signifies no relevance. Once evaluated, organize your results into a Python dictionary. Make sure to strictly follow the provided format {relevance_format} when compiling your results.""")
         chat_prompt = ChatPromptTemplate.from_messages(
             [system_message_prompt, human_message_prompt])
         
         return chat_prompt
+    
+    def data_parser_prompt(self):
+        """parsing prompt
+        Returns:
+            str: prompt string
+        """
+        system_message_prompt = SystemMessagePromptTemplate.from_template(
+            """you are an expert data converter AI that can convert provided text into JSON format""")
+        human_message_prompt = HumanMessagePromptTemplate.from_template(
+            """I have the following text {text} that I would like to be converted into JSON following this format {relevance_format}""")
+        chat_prompt = ChatPromptTemplate.from_messages(
+            [system_message_prompt, human_message_prompt])
+        
+        return chat_prompt
+        
     
     def relevancy_score(self, **kwargs):
         """get relevancy score using llm model. relevancy score ranges between 0 to 100
@@ -169,15 +176,15 @@ class RelevanceAnalysis:
         Returns:
             dict: relevancy score
         """
-        llm_model = kwargs.get('llm_model')
-        expertise_areas = kwargs.get('expertise_areas')
-        subject = kwargs.get('subject')
-        outline = kwargs.get('outline')
-        relevance_format = {i: "" for i in outline}
-        
+        relevance_format = {i: "relevance score" for i in kwargs.get('outline')}
         chat_prompt = self.relevancy_analysis_prompt()
-        chain = LLMChain(llm=llm_model, prompt=chat_prompt)
-        output = chain.run(expertise_areas = expertise_areas, paper_summary=self.paper_summary, outline=outline, subject = subject, relevance_format=relevance_format)
+        chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+        output = chain.run(expertise_areas = kwargs.get('expertise_areas'), paper_summary=self.paper_summary, outline=kwargs.get('outline'), subject = kwargs.get('subject'), relevance_format=relevance_format)
+        
+        # parsing results
+        chat_prompt = self.data_parser_prompt()
+        chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+        output = chain.run(text = output, relevance_format=relevance_format)
         
         output_dict = ast.literal_eval(output)
         return output_dict

@@ -7,3 +7,5 @@ envs
 **/**/*.pyc
 *.pyc
 __pycache__/*
+papers
+summary

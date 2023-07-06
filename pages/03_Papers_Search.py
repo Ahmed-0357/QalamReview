@@ -37,10 +37,10 @@ else:
     years_back = st.slider('📅 Indicate the number of past years to encompass in your search', min_value=1,
                            max_value=60, value=20, step=1)
 
-    num_search_terms = st.slider('🔑 Please select the number of results per search term', min_value=1,
+    num_search_terms = st.slider('🔑 Please select the number of results per search term', min_value=2,
                                  max_value=15, value=3, step=1)
 
-    total_results = st.slider('🌐 Please specify the number of search results per search term', min_value=1,
+    total_results = st.slider('🌐 Please specify the number of search results per search term', min_value=5,
                               max_value=30, value=10, step=1)
 
     if st.button('Start Web Search'):
@@ -56,7 +56,6 @@ else:
             search_terms = chain.run(expertise_areas=st.session_state['expertise_areas'],
                                      subject=st.session_state['paper_title'], outline=st.session_state['paper_outline'],
                                      num_search_terms=num_search_terms)
-
             try:
                 search_terms_list = ast.literal_eval(search_terms)
             except:  # in case the formate is not correct
@@ -88,11 +87,11 @@ else:
                             paper_html=paper, journal_info_format=sos.journal_info_format)
                         ppaper_dict = ast.literal_eval(ppaper)
                     except:
-                        time.sleep(2)
+                        time.sleep(3)
                         continue
                     else:
                         list_dict.append(ppaper_dict)
-                        time.sleep(2)
+                        time.sleep(3)
 
                 # display dfs
                 df = pd.DataFrame(list_dict)
