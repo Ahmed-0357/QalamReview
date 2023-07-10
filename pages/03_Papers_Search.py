@@ -29,6 +29,7 @@ elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'
     st.error(
         'Please first fill paper title, areas of expertise and paper outlines on Outline page.', icon="🚨")
 else:
+    # * all operation here is done using gpt-3.5-turbo to save cost
     st.markdown("### 📚🕵️ Scholarly Paper Search")
     st.markdown(
         "Search the internet for the most relevant papers that align with the review paper outlines")
@@ -41,7 +42,7 @@ else:
                                  max_value=15, value=3, step=1)
 
     total_results = st.slider('🌐 Please specify the number of search results per search term', min_value=5,
-                              max_value=30, value=10, step=1)
+                              max_value=100, value=10, step=5)
 
     if st.button('Start Web Search'):
         # df contains all papers
@@ -50,7 +51,7 @@ else:
         # create search terms
         with st.spinner('🧠 Creating search terms. Please wait...'):
             llm = ChatOpenAI(
-                openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
+                openai_api_key=st.session_state['openai_api'], temperature=1, model_name='gpt-3.5-turbo')
             chat_prompt = sos.search_terms_prompt()
             chain = LLMChain(llm=llm, prompt=chat_prompt)
             search_terms = chain.run(expertise_areas=st.session_state['expertise_areas'],
@@ -58,9 +59,9 @@ else:
                                      num_search_terms=num_search_terms)
             try:
                 search_terms_list = ast.literal_eval(search_terms)
-            except:  # in case the formate is not correct
+            except Exception as e:  # in case the formate is not correct
                 st.error(
-                    'An unexpected error has occurred, please click Start Web Search again', icon="🚨")
+                    f'An unexpected error has occurred: {e}, please click Start Web Search again', icon="🚨")
             else:
                 st.write('####')
                 st.write('Search terms to use')
@@ -74,11 +75,11 @@ else:
                 list_dict = []
                 # google search
                 search_results = sos.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
-                                                   'google_api'], cse_id=st.session_state['google_search_engine_id'], total_results=total_results, dateRestrict=f'y{years_back}')
+                                                   'google_api'], cse_id=st.session_state['google_search_engine_id'], total_results=int(total_results), dateRestrict=f'y{int(years_back)}')
                 # parsing
                 for paper in search_results:
                     llm = ChatOpenAI(
-                        openai_api_key=st.session_state['openai_api'], temperature=0, model_name=st.session_state['openai_model_opt'])
+                        openai_api_key=st.session_state['openai_api'], temperature=0, model_name='gpt-3.5-turbo')
                     chat_prompt = sos.search_parsing_prompt()
                     # in case of tokens higher than 4k
                     try:
@@ -87,11 +88,11 @@ else:
                             paper_html=paper, journal_info_format=sos.journal_info_format)
                         ppaper_dict = ast.literal_eval(ppaper)
                     except:
-                        time.sleep(3)
+                        time.sleep(5)
                         continue
                     else:
                         list_dict.append(ppaper_dict)
-                        time.sleep(3)
+                        time.sleep(5)
 
                 # display dfs
                 df = pd.DataFrame(list_dict)
@@ -126,5 +127,5 @@ else:
         csv = df_final.to_csv(index=False)
         # Convert CSV string to bytes
         b64 = base64.b64encode(csv.encode()).decode()
-        href = f'<a href="data:text/csv;base64,{b64}" download="relevant_papers.csv">Download as CSV</a>'
+        href = f'<a href="data:text/csv;base64,{b64}" download="relevant_papers.csv">Download Relevant Paper (CSV)</a>'
         st.markdown(href, unsafe_allow_html=True)

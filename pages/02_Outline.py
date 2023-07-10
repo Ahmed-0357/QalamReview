@@ -69,7 +69,7 @@ else:
     # download outline sample
     json_str = json.dumps(outline_sample)
     b64 = base64.b64encode(json_str.encode()).decode()
-    href = f'<a href="data:application/json;base64,{b64}" download="outline_sample.json">Download outline sample</a>'
+    href = f'<a href="data:application/json;base64,{b64}" download="outline_sample.json">Download Outline Sample (JSON)</a>'
     st.markdown(href, unsafe_allow_html=True)
 
     st.markdown("---")
@@ -100,7 +100,7 @@ else:
                                            subject=subject, elaborate_user=elaborate_user, outline_format=sos.outline_format)
                     except Exception as e:
                         st.error(
-                            f'An unexpected error has occurred: {e}, icon="🚨"')
+                            f'An unexpected error has occurred: {e}', icon="🚨")
                     else:
                         try:
                             result_dict = ast.literal_eval(result)
@@ -116,5 +116,5 @@ else:
                             json_gen = json.dumps(result_dict)
                             b64_g = base64.b64encode(
                                 json_gen.encode()).decode()
-                            href = f'<a href="data:application/json;base64,{b64_g}" download="outline_generated.json">Download generated outline</a>'
+                            href = f'<a href="data:application/json;base64,{b64_g}" download="outline_generated.json">Download Generated Outline (JSON)</a>'
                             st.markdown(href, unsafe_allow_html=True)

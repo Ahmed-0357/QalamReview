@@ -31,7 +31,7 @@ openai_api = st.sidebar.text_input(
 # model
 openai_model_opt = st.sidebar.selectbox(
     'Model',
-    ('gpt-3.5-turbo',))  # add gpt 4 later on
+    ('gpt-3.5-turbo', 'gpt-4'))
 
 st.sidebar.subheader('Google')
 # api key
