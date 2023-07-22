@@ -3,11 +3,11 @@ from streamlit_extras.buy_me_a_coffee import button
 from streamlit_extras.switch_page_button import switch_page
 
 # config
-st.set_page_config(page_title="auto review", page_icon=":book:",     layout="centered",
+st.set_page_config(page_title="QalamReview", page_icon="🖋️",     layout="centered",
                    initial_sidebar_state="expanded")
 
 # title
-html_title = '<h1 align="center"> <b> 📖 Auto Review </b></h1>'
+html_title = '<h1 align="center"> <b> 🖋️ QalamReview </b></h1>'
 
 st.markdown(html_title, unsafe_allow_html=True)
 # title
@@ -54,15 +54,15 @@ if google_search_engine_id != '':
 # Introduction about the app
 st.markdown(
     """
-    <p style='font-size: 18px;'><b>Here's how it works:</b></p>
+    <p style='font-size: 18px;'><b>Here's a snapshot of how it works:</b></p>
 
-    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> The app generates or accepts a paper's outline.</p>
+    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> Provide your own or let the app generate outline for your paper.</p>
 
-    <p style='font-size: 18px;'>🌐 <b>Internet Search: </b>It then searches the internet for relevant academic papers.</p>
+    <p style='font-size: 18px;'> 🔎 <b>Web Search: </b>The app searches the internet to source relevant academic papers that align with your chosen topic</p>
 
-    <p style='font-size: 18px;'>📚 <b>Paper Writing:</b> Finally, it creates a narrative review paper, summarizing the findings from the selected scholarly papers</p><br>
+    <p style='font-size: 18px;'> 📜 <b>Review Paper Generation:</b> Finally, the app crafts a narrative review paper that succinctly summarises the key findings from your selected scholarly works</p><br>
 
-    <p style='font-size: 18px;'>Simply Fill the <b>initial configuration</b> and relax, this app will generate comprehensive, well-structured narrative review papers, saving you valuable time</p>
+    <p style='font-size: 18px;'>Start by filling out the <b>initial configuration</b> and then sit back and relax. QalamReview will deliver a comprehensive narrative review paper, thereby saving your valuable time.</p>
     """, unsafe_allow_html=True
 )
 
@@ -75,9 +75,9 @@ if st.button('Start the Magic ✨'):
 st.markdown(
     """
     ---
-    💡 **Need help?** For comprehensive guidance on using this tool, we encourage you to refer to our detailed documentation available on our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper).
+    💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/autoreviewpaper) provides in-depth guidance on how to make the most of this tool. 
     
-    🤝 **Contribute to the Project:** This project is open source and exists for the benefit of the community. If would like to make a contribution, simply head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), initiate a fork, and commence your creative contributions.
+    🤝 **Keen on contributing to the project?** As an open-source initiative, QalamReview will thrive on community contributions. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), fork the project, and begin your creative journey!
     
     ---
     👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://github.com/Ahmed-0357).
@@ -87,7 +87,3 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
-
-openai_key = "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"
-google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
-cse_id = "90421513b2347450d"

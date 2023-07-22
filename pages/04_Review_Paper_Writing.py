@@ -11,9 +11,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import TokenTextSplitter
 
 # config
-page_title = "paper writing"
-page_icon = "📜"
-st.set_page_config(page_title=page_title, page_icon=page_icon)
+st.set_page_config(page_title="paper writing", page_icon="📜")
 
 # title
 html_title = '<h1 align="center"> <b> 📜 Review Paper Writing </b></h1>'
@@ -70,6 +68,7 @@ else:
     papers_per_sub = st.slider('📚 Quantity of research papers utilized for composing each individual sub-subsection', min_value=10,
                                max_value=50, value=10, step=1)
 
+    check = st.checkbox('pass summary')
     st.markdown("####")
 
     generate_button = st.button('Generate')
@@ -94,72 +93,76 @@ else:
         chat_ = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                            temperature=0, model_name=st.session_state['openai_model_opt'])
 
-        # summary spinner
-        with st.spinner('**🚀 Working on summarizing the papers. Please wait...**'):
-            # dir to and file to save summary data
-            dir_name = "summary"
-            if not os.path.exists(dir_name):
-                os.makedirs(dir_name)
-            summary_file = "papers_summary.txt"
-            summary_file_path = os.path.join(dir_name, summary_file)
-            relevance_file = "papers_relevance.txt"
-            relevance_file_path = os.path.join(dir_name, relevance_file)
-            # clean files
-            with open(summary_file_path, 'w') as file:
-                pass
-            with open(relevance_file_path, 'w') as file:
-                pass
+        # summary file and dir
+        dir_name = "summary"
+        summary_file = "papers_summary.txt"
+        summary_file_path = os.path.join(dir_name, summary_file)
+        relevance_file = "papers_relevance.txt"
+        relevance_file_path = os.path.join(dir_name, relevance_file)
 
-            # input dicts
-            # input dict summary
-            input_dict_summary = {'llm_model': chat, 'expertise_areas': st.session_state[
-                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
-            # input dict relevance
-            input_dict_relevance = {'llm_model': chat_, 'expertise_areas': st.session_state[
-                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+        if check == False:
+            # summary spinner
+            with st.spinner('**🚀 Working on summarizing the papers. Please wait...**'):
+                # dir to and file to save summary data
+                if not os.path.exists(dir_name):
+                    os.makedirs(dir_name)
 
-            # loop through papers
-            for paper_path in os.listdir(papers_dir):
-                with st.spinner(f'Summarizing {paper_path} ...'):
-                    # read paper content
-                    loader = PyPDFLoader(
-                        os.path.join(papers_dir, paper_path))
-                    pages = loader.load_and_split()
-                    paper_content = ''.join(
-                        page.page_content for page in pages)
+                # clean files
+                with open(summary_file_path, 'w') as file:
+                    pass
+                with open(relevance_file_path, 'w') as file:
+                    pass
 
-                    # split paper token wise (12k token for gpt-3 and 28k gpt-4)
-                    if model_name == 'gpt-3.5-turbo-16k':
-                        text_splitter = TokenTextSplitter(
-                            chunk_size=12000, chunk_overlap=0)
-                    else:
-                        text_splitter = TokenTextSplitter(
-                            chunk_size=28000, chunk_overlap=0)
-                    texts = text_splitter.split_text(paper_content)
+                # input dicts
+                # input dict summary
+                input_dict_summary = {'llm_model': chat, 'expertise_areas': st.session_state[
+                    'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+                # input dict relevance
+                input_dict_relevance = {'llm_model': chat_, 'expertise_areas': st.session_state[
+                    'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
 
-                    try:
-                        # summarization class
-                        summ = spw.PaperSummary(texts)
-                        output_summ = summ.summarize(**input_dict_summary)
-                    except Exception as e:
-                        time.sleep(to_sleep)
-                        continue
-                    else:
-                        time.sleep(to_sleep)
+                # loop through papers
+                for paper_path in os.listdir(papers_dir):
+                    with st.spinner(f'Summarizing {paper_path} ...'):
+                        # read paper content
+                        loader = PyPDFLoader(
+                            os.path.join(papers_dir, paper_path))
+                        pages = loader.load_and_split()
+                        paper_content = ''.join(
+                            page.page_content for page in pages)
+
+                        # split paper token wise (12k token for gpt-3 and 28k gpt-4)
+                        if model_name == 'gpt-3.5-turbo-16k':
+                            text_splitter = TokenTextSplitter(
+                                chunk_size=12000, chunk_overlap=0)
+                        else:
+                            text_splitter = TokenTextSplitter(
+                                chunk_size=28000, chunk_overlap=0)
+                        texts = text_splitter.split_text(paper_content)
+
                         try:
-                            # relevance class
-                            rele = spw.RelevanceAnalysis(output_summ)
-                            output_rele = rele.relevancy_score(
-                                **input_dict_relevance)
+                            # summarization class
+                            summ = spw.PaperSummary(texts)
+                            output_summ = summ.summarize(**input_dict_summary)
                         except Exception as e:
                             time.sleep(to_sleep)
                             continue
                         else:
-                            with open(summary_file_path, 'a', encoding='utf-8') as file:
-                                file.write(str(output_summ)+'\n\n')
-                            with open(relevance_file_path, 'a', encoding='utf-8') as file:
-                                file.write(str(output_rele)+'\n\n')
                             time.sleep(to_sleep)
+                            try:
+                                # relevance class
+                                rele = spw.RelevanceAnalysis(output_summ)
+                                output_rele = rele.relevancy_score(
+                                    **input_dict_relevance)
+                            except Exception as e:
+                                time.sleep(to_sleep)
+                                continue
+                            else:
+                                with open(summary_file_path, 'a', encoding='utf-8') as file:
+                                    file.write(str(output_summ)+'\n\n')
+                                with open(relevance_file_path, 'a', encoding='utf-8') as file:
+                                    file.write(str(output_rele)+'\n\n')
+                                time.sleep(to_sleep)
 
         with st.spinner('**🖋️ Writing the narrative review paper. Please wait...**'):
             df_relevancy = spw.load_and_process_df(relevance_file_path)

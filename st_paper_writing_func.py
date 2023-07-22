@@ -23,7 +23,7 @@ def load_and_process_df(file_path, numeric=True):
         dataframe: processed dataframe
     """
 
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf8') as file:
         content = file.read()
 
     parts = content.split('\n\n')[:-1]
