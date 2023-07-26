@@ -9,6 +9,7 @@ import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import TokenTextSplitter
+from streamlit_extras.stateful_button import button
 
 # config
 st.set_page_config(page_title="paper writing", page_icon="📜")
@@ -22,7 +23,7 @@ st.markdown('#')
 
 
 # check session state
-if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '' or st.session_state['google_search_engine_id'] == '':
+if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '':
     st.error(
         'Please complete the initial configuration on the main page first.', icon="🚨")
 elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
@@ -65,7 +66,7 @@ else:
 
     st.markdown("####")
     st.markdown("### ⚙️ Manuscript Preparation Setting")
-    papers_per_sub = st.slider('📚 Quantity of research papers utilized for composing each individual sub-subsection', min_value=10,
+    papers_per_sub = st.slider('📚 Numbers of research papers utilized for composing each individual sub-subsection', min_value=10,
                                max_value=50, value=10, step=1)
 
     check = st.checkbox('pass summary')
@@ -83,15 +84,18 @@ else:
             for item in sub_value
         ]
 
-        # llm model name
-        model_name, to_sleep = (st.session_state['openai_model_opt']+'-16k', 9) if st.session_state['openai_model_opt'] == 'gpt-3.5-turbo' else (
-            st.session_state['openai_model_opt']+'-32k', 17)
         # llm models instantiation
+        # chose model (gpt-3.5 - summary)
+        model_name_s, to_sleep_s = st.session_state['openai_model_opt'].split(
+            '&')[0]+'-16k' if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k', 9
         chat = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
-                          temperature=0, model_name=model_name)
+                          temperature=0, model_name=model_name_s)
         # relevance model
+        # chose model
+        model_name_r, to_sleep_r = st.session_state['openai_model_opt'].split(
+            '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt'], 60
         chat_ = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
-                           temperature=0, model_name=st.session_state['openai_model_opt'])
+                           temperature=0, model_name=model_name_r)
 
         # summary file and dir
         dir_name = "summary"
@@ -132,12 +136,12 @@ else:
                             page.page_content for page in pages)
 
                         # split paper token wise (12k token for gpt-3 and 28k gpt-4)
-                        if model_name == 'gpt-3.5-turbo-16k':
+                        if model_name_s == 'gpt-3.5-turbo-16k':
                             text_splitter = TokenTextSplitter(
                                 chunk_size=12000, chunk_overlap=0)
-                        else:
-                            text_splitter = TokenTextSplitter(
-                                chunk_size=28000, chunk_overlap=0)
+                        # else:
+                        #     text_splitter = TokenTextSplitter(
+                        #         chunk_size=28000, chunk_overlap=0)
                         texts = text_splitter.split_text(paper_content)
 
                         try:
@@ -145,24 +149,24 @@ else:
                             summ = spw.PaperSummary(texts)
                             output_summ = summ.summarize(**input_dict_summary)
                         except Exception as e:
-                            time.sleep(to_sleep)
+                            time.sleep(to_sleep_s)
                             continue
                         else:
-                            time.sleep(to_sleep)
+                            time.sleep(to_sleep_s)
                             try:
                                 # relevance class
                                 rele = spw.RelevanceAnalysis(output_summ)
                                 output_rele = rele.relevancy_score(
                                     **input_dict_relevance)
                             except Exception as e:
-                                time.sleep(to_sleep)
+                                time.sleep(to_sleep_r)
                                 continue
                             else:
                                 with open(summary_file_path, 'a', encoding='utf-8') as file:
                                     file.write(str(output_summ)+'\n\n')
                                 with open(relevance_file_path, 'a', encoding='utf-8') as file:
                                     file.write(str(output_rele)+'\n\n')
-                                time.sleep(to_sleep)
+                                time.sleep(to_sleep_r)
 
         with st.spinner('**🖋️ Writing the narrative review paper. Please wait...**'):
             df_relevancy = spw.load_and_process_df(relevance_file_path)

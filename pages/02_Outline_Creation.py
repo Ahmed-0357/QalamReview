@@ -2,6 +2,7 @@ import ast
 import base64
 import json
 import os
+import time
 
 import st_outline_search_func as sos
 import streamlit as st
@@ -90,8 +91,13 @@ else:
                     'Please complete the paper title and areas of expertise first.', icon="🚨")
             else:
                 with st.spinner('Wait for it...'):
+                    # chose model
+                    model_name = st.session_state['openai_model_opt'].split(
+                        '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
+                    time.sleep(10)
+                    
                     llm = ChatOpenAI(
-                        openai_api_key=st.session_state['openai_api'], temperature=1, model_name=st.session_state['openai_model_opt'])
+                        openai_api_key=st.session_state['openai_api'], temperature=1, model_name=model_name)
                     chat_prompt = sos.generate_outline_prompt()
 
                     try:

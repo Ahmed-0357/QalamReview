@@ -38,7 +38,7 @@ else:
     years_back = st.slider('📅 Indicate the number of past years to encompass in your search', min_value=1,
                            max_value=60, value=20, step=1)
 
-    num_search_terms = st.slider('🔑 Please select the number of results per search term', min_value=2,
+    num_search_terms = st.slider('🔑 Please select the number of search terms', min_value=2,
                                  max_value=15, value=3, step=1)
 
     total_results = st.slider('🌐 Please specify the number of search results per search term', min_value=5,
@@ -50,8 +50,11 @@ else:
 
         # create search terms
         with st.spinner('🧠 Creating search terms. Please wait...'):
+            # chose model
+            model_name = st.session_state['openai_model_opt'].split(
+                '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
             llm = ChatOpenAI(
-                openai_api_key=st.session_state['openai_api'], temperature=1, model_name='gpt-3.5-turbo')
+                openai_api_key=st.session_state['openai_api'], temperature=1, model_name=model_name)
             chat_prompt = sos.search_terms_prompt()
             chain = LLMChain(llm=llm, prompt=chat_prompt)
             search_terms = chain.run(expertise_areas=st.session_state['expertise_areas'],
@@ -77,9 +80,12 @@ else:
                 search_results = sos.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
                                                    'google_api'], cse_id=st.session_state['google_search_engine_id'], total_results=int(total_results), dateRestrict=f'y{int(years_back)}')
                 # parsing
+                # chose model (gpt-3.5)
+                model_name = st.session_state['openai_model_opt'].split(
+                    '&')[0] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
                 for paper in search_results:
                     llm = ChatOpenAI(
-                        openai_api_key=st.session_state['openai_api'], temperature=0, model_name='gpt-3.5-turbo')
+                        openai_api_key=st.session_state['openai_api'], temperature=0, model_name=model_name)
                     chat_prompt = sos.search_parsing_prompt()
                     # in case of tokens higher than 4k
                     try:

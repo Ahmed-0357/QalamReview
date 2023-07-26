@@ -37,10 +37,6 @@ def load_and_process_df(file_path, numeric=True):
         df = pd.DataFrame(merged_dicts)
         df = df.replace("None", "")
 
-    # # Add ID column
-    # df['ID'] = range(len(df))
-    # df= df[['ID'] + [col for col in df.columns if col != 'ID']]
-
     return df
 
 

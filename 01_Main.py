@@ -31,7 +31,10 @@ openai_api = st.sidebar.text_input(
 # model
 openai_model_opt = st.sidebar.selectbox(
     'Model',
-    ('gpt-3.5-turbo', 'gpt-4'))
+    ('gpt-3.5-turbo (LOW COST)', 'gpt-3.5-turbo and gpt-4 (BEST RESULTS)'))
+
+openai_model_opt = 'gpt-3.5-turbo' if openai_model_opt == 'gpt-3.5-turbo (LOW COST)' else 'gpt-3.5-turbo&gpt-4'
+
 
 st.sidebar.subheader('Google')
 # api key
@@ -69,7 +72,7 @@ st.markdown(
 
 # Action Buttons
 if st.button('Start the Magic ✨'):
-    switch_page('Outline')
+    switch_page('Outline Creation')
 
 # Footer
 st.markdown(
