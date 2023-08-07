@@ -100,7 +100,7 @@ class PaperSummary:
 
             "limitations/gaps": Identify potential limitations or gaps in the study, as suggested by the paper content. This could involve issues with the study design or research areas left unaddressed. If these aspects aren't clear, please denote this section as 'None'.
 
-            Please assemble and structure the extracted information into a Python dictionary, adhering to the following format: {summarize_format}""")
+            Please assemble and structure the extracted information into a Python dictionary, adhering to the following format: {summarize_format}, also just give the python dictionary without anything else""")
 
         elif p_type == 'many1':
             system_message_prompt = SystemMessagePromptTemplate.from_template(
@@ -185,7 +185,7 @@ class RelevanceAnalysis:
             """Equipped with substantial expertise in {expertise_areas}, you're an accomplished researcher renowned for crafting insightful narrative review papers and conducting thorough assessments of journal paper summaries.
             Your task harnesses your unique aptitude for aligning the essence of a journal summary with the framework of a narrative review paper. Apply your knowledge and experience to successfully complete this assignment.""")
         human_message_prompt = HumanMessagePromptTemplate.from_template(
-            """Given a summary of a specific research paper {paper_summary} and the outline of a narrative review paper {outline}, titled {subject}, your task is to evaluate the relevance of the paper's content in relation to each and every section of the review paper's outline. Relevance should be scored from 0 to 100, where 100 indicates strong relevance and 0 signifies no relevance. Once evaluated, organize your results into a Python dictionary. Make sure to strictly follow the provided format {relevance_format} when compiling your results.""")
+            """Given a summary of a specific research paper {paper_summary} and the outline of a narrative review paper {outline}, titled {subject}, your task is to evaluate the relevance of the paper's content in relation to each and every section of the review paper's outline. Relevance should be scored from 0 to 100, where 100 indicates strong relevance and 0 signifies no relevance. Once evaluated, organize your results into a Python dictionary. Make sure to strictly follow the provided format {relevance_format} when compiling your results. also just give the python dictionary without anything else""")
         chat_prompt = ChatPromptTemplate.from_messages(
             [system_message_prompt, human_message_prompt])
 
@@ -199,7 +199,7 @@ class RelevanceAnalysis:
         system_message_prompt = SystemMessagePromptTemplate.from_template(
             """you are an expert data converter AI that can convert provided text into JSON format""")
         human_message_prompt = HumanMessagePromptTemplate.from_template(
-            """I have the following text {text} that I would like to be converted into JSON following this format {relevance_format}""")
+            """I have the following text {text} that I would like to be converted into JSON following this format {relevance_format}, also just give the JSON without anything else""")
         chat_prompt = ChatPromptTemplate.from_messages(
             [system_message_prompt, human_message_prompt])
 
@@ -214,13 +214,13 @@ class RelevanceAnalysis:
         relevance_format = {
             i: "relevance score" for i in kwargs.get('outline')}
         chat_prompt = self.relevancy_analysis_prompt()
-        chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+        chain = LLMChain(llm=kwargs.get('llm_model')[0], prompt=chat_prompt)
         output = chain.run(expertise_areas=kwargs.get('expertise_areas'), paper_summary=self.paper_summary, outline=kwargs.get(
             'outline'), subject=kwargs.get('subject'), relevance_format=relevance_format)
 
         # parsing results
         chat_prompt = self.data_parser_prompt()
-        chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
+        chain = LLMChain(llm=kwargs.get('llm_model')[1], prompt=chat_prompt)
         output = chain.run(text=output, relevance_format=relevance_format)
 
         output_dict = ast.literal_eval(output)

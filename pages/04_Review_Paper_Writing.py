@@ -1,5 +1,6 @@
 import base64
 import os
+import shutil
 import time
 from functools import reduce
 
@@ -9,7 +10,6 @@ import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import TokenTextSplitter
-from streamlit_extras.stateful_button import button
 
 # config
 st.set_page_config(page_title="paper writing", page_icon="📜")
@@ -25,7 +25,7 @@ st.markdown('#')
 # check session state
 if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '':
     st.error(
-        'Please complete the initial configuration on the main page first.', icon="🚨")
+        'Please complete OpenAI configuration configuration on the main page first.', icon="🚨")
 elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
 
     st.error(
@@ -33,7 +33,7 @@ elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'
 else:
     st.markdown("### 📝 Journal Papers")
     st.markdown(
-        "Upload downloaded journal papers which will be utilized in the composition of your narrative review paper.")
+        "Upload the journal papers that will be utilized in the composition of your narrative review paper.")
 
     uploaded_papers = st.file_uploader("",
                                        type=['pdf'],
@@ -65,14 +65,14 @@ else:
                 continue
 
     st.markdown("####")
-    st.markdown("### ⚙️ Manuscript Preparation Setting")
-    papers_per_sub = st.slider('📚 Numbers of research papers utilized for composing each individual sub-subsection', min_value=10,
+    st.markdown("### ⚙️ Manuscript Writeup Setting")
+    papers_per_sub = st.slider('📄 Numbers of research papers utilized for composing each individual sub-subsection', min_value=3,
                                max_value=50, value=10, step=1)
 
-    check = st.checkbox('pass summary')
-    st.markdown("####")
+    rel_score_cutoff = st.slider('🥇 Define the relevance score cutoff (0-100). Scores above 100 will skip section write-ups.', min_value=0,
+                                 max_value=105, value=90, step=1)
 
-    generate_button = st.button('Generate')
+    generate_button = st.button('Start')
     if generate_button and not uploaded_papers:
         st.error('Please upload journal papers before generating. 🚨')
     elif generate_button:
@@ -85,15 +85,16 @@ else:
         ]
 
         # llm models instantiation
-        # chose model (gpt-3.5 - summary)
+        # chose model --> (gpt-3.5 - summary)
         model_name_s, to_sleep_s = st.session_state['openai_model_opt'].split(
             '&')[0]+'-16k' if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k', 9
         chat = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                           temperature=0, model_name=model_name_s)
         # relevance model
         # chose model
-        model_name_r, to_sleep_r = st.session_state['openai_model_opt'].split(
-            '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt'], 60
+        model_name_r = st.session_state['openai_model_opt'].split(
+            '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k'
+        to_sleep_r = 60 if '&' in st.session_state['openai_model_opt'] else 9
         chat_ = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                            temperature=0, model_name=model_name_r)
 
@@ -104,71 +105,72 @@ else:
         relevance_file = "papers_relevance.txt"
         relevance_file_path = os.path.join(dir_name, relevance_file)
 
-        if check == False:
-            # summary spinner
-            with st.spinner('**🚀 Working on summarizing the papers. Please wait...**'):
-                # dir to and file to save summary data
-                if not os.path.exists(dir_name):
-                    os.makedirs(dir_name)
+        # summary spinner
+        with st.spinner('**🚀 Working on summarizing the papers and ranking them. Please wait...**'):
+            # dir to and file to save summary data
+            if os.path.exists(dir_name):
+                shutil.rmtree(dir_name)
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name)
 
-                # clean files
-                with open(summary_file_path, 'w') as file:
-                    pass
-                with open(relevance_file_path, 'w') as file:
-                    pass
+            # clean files
+            with open(summary_file_path, 'w') as file:
+                pass
+            with open(relevance_file_path, 'w') as file:
+                pass
 
-                # input dicts
-                # input dict summary
-                input_dict_summary = {'llm_model': chat, 'expertise_areas': st.session_state[
-                    'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
-                # input dict relevance
-                input_dict_relevance = {'llm_model': chat_, 'expertise_areas': st.session_state[
-                    'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+            # input dicts
+            # input dict summary
+            input_dict_summary = {'llm_model': chat, 'expertise_areas': st.session_state[
+                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+            # input dict relevance
+            input_dict_relevance = {'llm_model': (chat_, chat), 'expertise_areas': st.session_state[
+                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}  # chat is used as parser
 
-                # loop through papers
-                for paper_path in os.listdir(papers_dir):
-                    with st.spinner(f'Summarizing {paper_path} ...'):
-                        # read paper content
-                        loader = PyPDFLoader(
-                            os.path.join(papers_dir, paper_path))
-                        pages = loader.load_and_split()
-                        paper_content = ''.join(
-                            page.page_content for page in pages)
+            # loop through papers
+            for paper_path in os.listdir(papers_dir):
+                with st.spinner(f'Summarizing and generating relevance scores for {paper_path} ...'):
+                    # read paper content
+                    loader = PyPDFLoader(
+                        os.path.join(papers_dir, paper_path))
+                    pages = loader.load_and_split()
+                    paper_content = ''.join(
+                        page.page_content for page in pages)
 
-                        # split paper token wise (12k token for gpt-3 and 28k gpt-4)
-                        if model_name_s == 'gpt-3.5-turbo-16k':
-                            text_splitter = TokenTextSplitter(
-                                chunk_size=12000, chunk_overlap=0)
-                        # else:
-                        #     text_splitter = TokenTextSplitter(
-                        #         chunk_size=28000, chunk_overlap=0)
-                        texts = text_splitter.split_text(paper_content)
+                    # split paper token wise (12k token for gpt-3 and 28k gpt-4)
+                    if model_name_s == 'gpt-3.5-turbo-16k':
+                        text_splitter = TokenTextSplitter(
+                            chunk_size=12000, chunk_overlap=0)
+                    # else:
+                    #     text_splitter = TokenTextSplitter(
+                    #         chunk_size=28000, chunk_overlap=0)
+                    texts = text_splitter.split_text(paper_content)
 
+                    try:
+                        # summarization class
+                        summ = spw.PaperSummary(texts)
+                        output_summ = summ.summarize(**input_dict_summary)
+                    except Exception as e:
+                        time.sleep(to_sleep_s)
+                        continue
+                    else:
+                        time.sleep(to_sleep_s)
                         try:
-                            # summarization class
-                            summ = spw.PaperSummary(texts)
-                            output_summ = summ.summarize(**input_dict_summary)
+                            # relevance class
+                            rele = spw.RelevanceAnalysis(output_summ)
+                            output_rele = rele.relevancy_score(
+                                **input_dict_relevance)
                         except Exception as e:
-                            time.sleep(to_sleep_s)
+                            time.sleep(to_sleep_r)
                             continue
                         else:
-                            time.sleep(to_sleep_s)
-                            try:
-                                # relevance class
-                                rele = spw.RelevanceAnalysis(output_summ)
-                                output_rele = rele.relevancy_score(
-                                    **input_dict_relevance)
-                            except Exception as e:
-                                time.sleep(to_sleep_r)
-                                continue
-                            else:
-                                with open(summary_file_path, 'a', encoding='utf-8') as file:
-                                    file.write(str(output_summ)+'\n\n')
-                                with open(relevance_file_path, 'a', encoding='utf-8') as file:
-                                    file.write(str(output_rele)+'\n\n')
-                                time.sleep(to_sleep_r)
+                            with open(summary_file_path, 'a', encoding='utf-8') as file:
+                                file.write(str(output_summ)+'\n\n')
+                            with open(relevance_file_path, 'a', encoding='utf-8') as file:
+                                file.write(str(output_rele)+'\n\n')
+                            time.sleep(to_sleep_r)
 
-        with st.spinner('**🖋️ Writing the narrative review paper. Please wait...**'):
+        with st.spinner('**✒️ Writing the narrative review paper. Please wait...**'):
             df_relevancy = spw.load_and_process_df(relevance_file_path)
             df_summary = spw.load_and_process_df(
                 summary_file_path, numeric=False)
@@ -183,45 +185,59 @@ else:
             for i in range(len(outline_list)):
                 with st.spinner(f'Writing section: {outline_list[i]} ...'):
                     try:
-                        # sort papers
-                        summ_rele.sort_values(
-                            by=outline_list[i], ascending=False, inplace=True)
+                        # relevance cutoff
+                        summ_rele_filtered = summ_rele[summ_rele[outline_list[i]] >= rel_score_cutoff].copy(
+                        )
+                        # sort papers by year
+                        summ_rele_filtered.sort_values(
+                            by='year', ascending=False, inplace=True)
                     except Exception as e:
                         st.write(e)
                         continue
                     else:
-                        summ_rele_copy = summ_rele.iloc[:int(
+                        summ_rele_filtered_copy = summ_rele_filtered.iloc[:int(
                             papers_per_sub), :8].copy()
-                        # split papers summary token wise (12k token for gpt-3 and 28k gpt-4)
-                        summ_rele_list = summ_rele_copy.to_dict(
-                            orient='records')
-                        summ_rele_text = "\n\n".join(
-                            str(item) for item in summ_rele_list)
-
-                        del summ_rele_copy
-                        del summ_rele_list
-
-                        # split text
-                        if model_name == 'gpt-3.5-turbo-16k':
-                            text_splitter = TokenTextSplitter(
-                                chunk_size=12000, chunk_overlap=0)
+                        # if filtered df is empty just add note
+                        if len(summ_rele_filtered_copy) == 0:
+                            output_sections.append(
+                                (outline_list[i], 'Scholarly papers do not provide enough information to write this section.'))
                         else:
-                            text_splitter = TokenTextSplitter(
-                                chunk_size=28000, chunk_overlap=0)
-                        texts = text_splitter.split_text(summ_rele_text)
+                            # get text from df
+                            summ_rele_list = summ_rele_filtered_copy.to_dict(
+                                orient='records')
+                            summ_rele_text = "\n\n".join(
+                                str(item) for item in summ_rele_list)
 
-                        # input dict writing
-                        input_dict_writing = {'llm_model': chat, 'expertise_areas': st.session_state[
-                            'expertise_areas'], 'subject': st.session_state['paper_title'], 'section': outline_list[i], 'texts': texts, 'to_sleep': to_sleep}
-                        try:
-                            output = manwri.section_writing(
-                                **input_dict_writing)
-                        except Exception as e:
-                            time.sleep(to_sleep)
-                            continue
-                        else:
-                            output_sections.append((outline_list[i], output))
-                            time.sleep(to_sleep)
+                            del summ_rele_filtered_copy
+                            del summ_rele_list
+
+                            # split text select llm model and set sleeping time
+                            if '&' in st.session_state['openai_model_opt']:
+                                text_splitter = TokenTextSplitter(
+                                    chunk_size=6600, chunk_overlap=0)
+                                llm_model = chat_
+                                to_sleep = 60
+                            else:
+                                text_splitter = TokenTextSplitter(
+                                    chunk_size=12000, chunk_overlap=0)
+                                llm_model = chat
+                                to_sleep = 9
+                            texts = text_splitter.split_text(
+                                summ_rele_text)
+
+                            # input dict writing
+                            input_dict_writing = {'llm_model': llm_model, 'expertise_areas': st.session_state[
+                                'expertise_areas'], 'subject': st.session_state['paper_title'], 'section': outline_list[i], 'texts': texts, 'to_sleep': to_sleep}
+                            try:
+                                output = manwri.section_writing(
+                                    **input_dict_writing)
+                            except Exception as e:
+                                time.sleep(to_sleep)
+                                continue
+                            else:
+                                output_sections.append(
+                                    (outline_list[i], output))
+                                time.sleep(to_sleep)
 
             # merge all content and final write up
             output_sections_result = {}

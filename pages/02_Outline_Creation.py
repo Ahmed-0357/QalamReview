@@ -24,7 +24,7 @@ st.markdown('#')
 # check session state for api
 if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '':
     st.error(
-        'Please complete the initial configuration on the main page first.', icon="🚨")
+        'Please complete OpenAI configuration on the main page first.', icon="🚨")
 
 
 else:
@@ -43,7 +43,7 @@ else:
 
     st.markdown("### 📚 Areas of Expertise")
     st.markdown(
-        "Please list the areas of expertise that will guide the AI to create more refined and tailored paper.")
+        "Please list the areas of expertise that will guide the AI to create more refined and tailored job.")
     expertise_areas = st.text_input(
         '', placeholder="example: reservoir engineering,  petroleum engineering, CO2 storage, enhanced oil recovery", label_visibility='collapsed')
 
@@ -54,7 +54,7 @@ else:
     st.markdown("---")
 
     # Outline upload
-    st.markdown("### 📄 Upload Outline File")
+    st.markdown("### 📄 Upload Your Outline")
     outline_file = st.file_uploader('', type=['json'])
     if outline_file:
         outline_user = json.load(outline_file)
@@ -64,7 +64,7 @@ else:
     # show and download sample
     with open(os.path.join('files', 'outline_sample.json'), 'r') as json_file:
         outline_sample = json_file.read()
-    if st.checkbox('Show outline sample'):
+    if st.checkbox('Show example outline format'):
         st.json(outline_sample)
 
     # download outline sample
@@ -95,7 +95,7 @@ else:
                     model_name = st.session_state['openai_model_opt'].split(
                         '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
                     time.sleep(10)
-                    
+
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state['openai_api'], temperature=1, model_name=model_name)
                     chat_prompt = sos.generate_outline_prompt()

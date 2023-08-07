@@ -31,17 +31,17 @@ openai_api = st.sidebar.text_input(
 # model
 openai_model_opt = st.sidebar.selectbox(
     'Model',
-    ('gpt-3.5-turbo (LOW COST)', 'gpt-3.5-turbo and gpt-4 (BEST RESULTS)'))
+    ('gpt-3.5 (LOW COST)', 'gpt-3.5 & gpt-4 (BETTER RESULTS)'))
 
-openai_model_opt = 'gpt-3.5-turbo' if openai_model_opt == 'gpt-3.5-turbo (LOW COST)' else 'gpt-3.5-turbo&gpt-4'
+openai_model_opt = 'gpt-3.5-turbo' if openai_model_opt == 'gpt-3.5 (LOW COST)' else 'gpt-3.5-turbo&gpt-4'
 
 
 st.sidebar.subheader('Google')
 # api key
 google_api = st.sidebar.text_input(
-    "Search API Key", type='password')
+    "Search API Key (optional)", type='password')
 google_search_engine_id = st.sidebar.text_input(
-    "Search Engine ID", type='password')
+    "Search Engine ID (optional)", type='password')
 
 # update session
 if openai_api != '':
@@ -53,6 +53,10 @@ if google_api != '':
 if google_search_engine_id != '':
     st.session_state['google_search_engine_id'] = google_search_engine_id
 
+# Action Buttons
+st.sidebar.markdown('')
+if st.sidebar.button('Start ✨'):
+    switch_page('Outline Creation')
 
 # Introduction about the app
 st.markdown(
@@ -63,27 +67,23 @@ st.markdown(
 
     <p style='font-size: 18px;'> 🔎 <b>Web Search: </b>The app searches the internet to source relevant academic papers that align with your chosen topic</p>
 
-    <p style='font-size: 18px;'> 📜 <b>Review Paper Generation:</b> Finally, the app crafts a narrative review paper that succinctly summarises the key findings from your selected scholarly works</p><br>
+    <p style='font-size: 18px;'> 📜 <b>Review Paper Generation:</b> Finally, the app crafts a narrative review paper that summarizes the key findings from your selected scholarly works</p><br>
 
     <p style='font-size: 18px;'>Start by filling out the <b>initial configuration</b> and then sit back and relax. QalamReview will deliver a comprehensive narrative review paper, thereby saving your valuable time.</p>
     """, unsafe_allow_html=True
 )
 
-
-# Action Buttons
-if st.button('Start the Magic ✨'):
-    switch_page('Outline Creation')
-
+st.markdown('<hr style="border:3px solid #ffc83d;">', unsafe_allow_html=True)
+st.markdown('')
 # Footer
 st.markdown(
     """
-    ---
     💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/autoreviewpaper) provides in-depth guidance on how to make the most of this tool. 
     
     🤝 **Keen on contributing to the project?** As an open-source initiative, QalamReview will thrive on community contributions. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), fork the project, and begin your creative journey!
     
     ---
-    👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://github.com/Ahmed-0357).
+    👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://www.linkedin.com/in/ahmed-abdulrahman-75b41a164/).
     
     💖 **Support my work:** If you find value in this and want to contribute to my efforts, you can support me by clicking the link below.
     """

@@ -20,4 +20,4 @@ Start by filling out the initial configuration and then sit back and relax. Qala
 💖 Support my work: If you find value in this and want to contribute to my efforts, you can support me by clicking the link below.
 
 
-![sketch](./files/Screensho.png)
+![sketch](./files/flow_diagram.png)

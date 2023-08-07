@@ -21,15 +21,19 @@ st.markdown('#')
 # st.write(st.session_state)
 
 # check session state
-if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '' or st.session_state['google_api'] == '' or st.session_state['google_search_engine_id'] == '':
+if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '':
     st.error(
-        'Please complete the initial configuration on the main page first.', icon="🚨")
+        'Please complete OpenAI configuration on the main page first.', icon="🚨")
+
+if st.session_state['google_api'] == '' or st.session_state['google_search_engine_id'] == '':
+    st.error(
+        'Please complete Google search engine configuration on the main page first.', icon="🚨")
+
 elif st.session_state['paper_title'] == '' or st.session_state['expertise_areas'] == '' or st.session_state['paper_outline'] == '':
 
     st.error(
         'Please first fill paper title, areas of expertise and paper outlines on Outline page.', icon="🚨")
 else:
-    # * all operation here is done using gpt-3.5-turbo to save cost
     st.markdown("### 📚🕵️ Scholarly Paper Search")
     st.markdown(
         "Search the internet for the most relevant papers that align with the review paper outlines")
@@ -80,7 +84,7 @@ else:
                 search_results = sos.google_search(search_term=f'academic journal papers on {k}', api_key=st.session_state[
                                                    'google_api'], cse_id=st.session_state['google_search_engine_id'], total_results=int(total_results), dateRestrict=f'y{int(years_back)}')
                 # parsing
-                # chose model (gpt-3.5)
+                # chose model --> (gpt-3.5)
                 model_name = st.session_state['openai_model_opt'].split(
                     '&')[0] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
                 for paper in search_results:
