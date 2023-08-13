@@ -90,11 +90,3 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
-
-# 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
-# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
-# cse_id = "90421513b2347450d"
-
-# A Comprehensive Review of Land Subsidence in Louisiana
-
-# Geology & Geophysics, Environmental Science & Ecology, Hydrology & Civil Engineering, Geospatial Analysis & Remote Sensing

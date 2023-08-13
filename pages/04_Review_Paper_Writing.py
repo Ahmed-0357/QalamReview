@@ -180,6 +180,7 @@ else:
             del df_relevancy
             del df_summary
 
+            references_list = []
             output_sections = []
             manwri = spw.ManuscriptWriting()
             for i in range(len(outline_list)):
@@ -190,7 +191,7 @@ else:
                         )
                         # sort papers by year
                         summ_rele_filtered.sort_values(
-                            by='year', ascending=False, inplace=True)
+                            by='year', inplace=True)
                     except Exception as e:
                         st.write(e)
                         continue
@@ -239,6 +240,11 @@ else:
                                     (outline_list[i], output))
                                 time.sleep(to_sleep)
 
+                                # references
+                                references_df = summ_rele_filtered.iloc[:int(
+                                    papers_per_sub), :4].copy()
+                                references_list.append(references_df)
+
             # merge all content and final write up
             output_sections_result = {}
             for keys, summary in [(tuple(j.strip() for j in i.split('-')), s) for i, s in output_sections]:
@@ -247,6 +253,29 @@ else:
 
             manwri.final_writeup(
                 st.session_state['paper_title'], output_sections_result)
+
+            # add references
+            # concat refer df and remove duplicates
+            combined_refer_df = pd.concat(references_list, ignore_index=True)
+            combined_refer_df = combined_refer_df.drop_duplicates()
+
+            # get text from df
+            refer_list = combined_refer_df.to_dict(
+                orient='records')
+            references_text = "\n\n".join(
+                str(item) for item in refer_list)
+
+            # list of references (APA)
+            input_dict_refer = {'llm_model': chat,
+                                'references_text': references_text}
+            try:
+                output = manwri.references(
+                    **input_dict_refer)
+            except:
+                pass
+            else:
+                manwri.add_text('References', 'Heading 1', bold=True, size=12)
+                manwri.add_text(output, 'Normal', size=11)
 
             # save summary and relevancy of scholarly papers
             csv = summ_rele.to_csv(index=False)
