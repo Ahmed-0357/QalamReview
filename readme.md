@@ -1,23 +1,30 @@
+# **🖋️ QalamReview**
 
-🖋️ QalamReview
-generate up to date narrative review paper in any topic of your choice!
-Here's a snapshot of how it works:
+## ⚡ **draft a narrative review paper on your favorite topic** ⚡
 
-📝 Outline Creation: Provide your own or let the app generate outline for your paper.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub star chart](https://img.shields.io/github/stars/Ahmed-0357/wafer_fault_detection?style=social)](https://star-history.com/#Ahmed-0357/wafer_fault_detection)
+[![Open Issues](https://img.shields.io/github/issues-raw/Ahmed-0357/wafer_fault_detection)](https://github.com/Ahmed-0357/wafer_fault_detection/issues)
 
-🔎 Web Search: The app searches the internet to source relevant academic papers that align with your chosen topic
 
-📜 Review Paper Generation: Finally, the app crafts a thorough narrative review paper that succinctly summarises the key findings from your selected scholarly works
+In the vast world of academia, scanning through numerous research articles to draft a review can be daunting. QalamReview harnesses the power of large language models, allowing you to effortlessly compile insights and draft your narrative review paper on any topic of your choice.
 
-Start by filling out the initial configuration and then sit back and relax. QalamReview will deliver a comprehensive narrative review paper, thereby saving your valuable time.
+<br>
 
-💡 Need assistance? Our User Guide provides in-depth guidance on how to make the most of this tool.
-
-🤝 Keen on contributing to the project? As an open-source initiative, QalamReview will thrive on community contributions. If you're interested in contributing, just head over to our GitHub, fork the project, and begin your creative journey!
-
-👩‍💻 About me: I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more about me.
-
-💖 Support my work: If you find value in this and want to contribute to my efforts, you can support me by clicking the link below.
-
+## 🏗️ Project Architecture
 
 ![sketch](./files/flow_diagram.png)
+
+<br>
+
+## 🤝 contribution
+
+As an open-source project in a rapidly developing field, we highly value and welcome contributions. Whether you're offering innovative features, refining our current setup, or enhancing our documentation, your input is essential.
+
+**🎯 Anticipated Features & Improvements on Our Radar**:
+
+- Integration with Google Scholar for enhanced article searches.
+- Introduce a parsing feature for tables, equations, and figures from user-provided articles.
+- Incorporation of other advanced language models.
+- Refinement of system and user prompts.
+- Improved summarization scheme.

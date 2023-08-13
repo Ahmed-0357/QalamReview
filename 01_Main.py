@@ -11,7 +11,7 @@ html_title = '<h1 align="center"> <b> 🖋️ QalamReview </b></h1>'
 
 st.markdown(html_title, unsafe_allow_html=True)
 # title
-html_title = '<h2 align="center"> <b> generate up to date narrative review paper in any topic of your choice! </b></h2>'
+html_title = '<h2 align="center"> <b> draft a narrative review paper on your favorite topic </b></h2>'
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown('#')
 
@@ -61,15 +61,15 @@ if st.sidebar.button('Start ✨'):
 # Introduction about the app
 st.markdown(
     """
-    <p style='font-size: 18px;'><b>Here's a snapshot of how it works:</b></p>
+    <p style='font-size: 18px;'><b>Here is how it works:</b></p>
 
-    <p style='font-size: 18px;'> 📝 <b>Outline Creation: </b> Provide your own or let the app generate outline for your paper.</p>
+    <ul style='font-size: 18px;'>
+        <li><b>📝Outline Creation:</b> You can submit your own outline, or use the app to create one tailored for your paper.</li>
+        <li><b>🔎Web Search (optional):</b> The app scans the web to find academic papers relevant to your selected topic.</li>
+        <li><b>📜Review Paper Generation:</b> The app then assembles a narrative review paper, highlighting the principal insights from the scholarly articles you've provided</li>
+    </ul>
 
-    <p style='font-size: 18px;'> 🔎 <b>Web Search: </b>The app searches the internet to source relevant academic papers that align with your chosen topic</p>
-
-    <p style='font-size: 18px;'> 📜 <b>Review Paper Generation:</b> Finally, the app crafts a narrative review paper that summarizes the key findings from your selected scholarly works</p><br>
-
-    <p style='font-size: 18px;'>Start by filling out the <b>initial configuration</b> and then sit back and relax. QalamReview will deliver a comprehensive narrative review paper, thereby saving your valuable time.</p>
+    <p style='font-size: 18px;'>Start by filling out the <b>initial configuration</b>. QalamReview will draft your narrative review paper, giving you a head start and saving precious time.</p>
     """, unsafe_allow_html=True
 )
 
@@ -78,9 +78,9 @@ st.markdown('')
 # Footer
 st.markdown(
     """
-    💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/autoreviewpaper) provides in-depth guidance on how to make the most of this tool. 
+    💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/autoreviewpaper) provides in-depth guidance on how to make the most of QalamReview. 
     
-    🤝 **Keen on contributing to the project?** As an open-source initiative, QalamReview will thrive on community contributions. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), fork the project, and begin your creative journey!
+    🤝 **Keen on contributing to the project?** QalamReview stands strong as an open-source initiative. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), fork the project, and begin your creative journey!
     
     ---
     👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://www.linkedin.com/in/ahmed-abdulrahman-75b41a164/).
@@ -90,3 +90,11 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+# 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
+# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
+# cse_id = "90421513b2347450d"
+
+# A Comprehensive Review of Land Subsidence in Louisiana
+
+# Geology & Geophysics, Environmental Science & Ecology, Hydrology & Civil Engineering, Geospatial Analysis & Remote Sensing
