@@ -23,7 +23,7 @@ st.session_state['google_api'] = ''
 st.session_state['google_search_engine_id'] = ''
 
 # initial config
-st.sidebar.header('🔧 Initial Configuration')
+st.sidebar.header('🔧 Initial Configurations')
 st.sidebar.subheader('OpenAI')
 # api key
 openai_api = st.sidebar.text_input(
