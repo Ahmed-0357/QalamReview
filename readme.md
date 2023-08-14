@@ -12,7 +12,7 @@
 
 ## **📖 Documentation**
 
-Please see here for full documentation on:
+Explore our [User Guide](docs/user_guide.md) to discover how to maximize your experience with QalamReview.
 
 <br>
 
@@ -44,7 +44,7 @@ Please see here for full documentation on:
 
 ## **🏗️ Project Architecture**
 
-![sketch](./files/flow_diagram.png)
+![sketch](./docs/pics/project_architecture.png)
 
 <br>
 
@@ -59,3 +59,7 @@ As an open-source project in a rapidly developing field, we highly value and wel
 - Incorporation of other advanced language models.
 - Refinement of system and user prompts.
 - Improved summarization scheme.
+
+<br>
+
+## **🎉 Acknowledgements**
