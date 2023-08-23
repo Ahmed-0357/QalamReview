@@ -367,10 +367,15 @@ class ManuscriptWriting:
         return output
 
     def references(self, **kwargs):
+        """list references used in manuscripts 
+
+        Returns:
+            str: list of references
+        """
         system_message_prompt = SystemMessagePromptTemplate.from_template(
             """you're an accomplished researcher skilled in formatting references according to the APA style.""")
         human_message_prompt = HumanMessagePromptTemplate.from_template(
-            """provided these refrences {references_text}. I'd appreciate it if you could ensure they are correctly formatted according to the APA style guidelines. Just return the list of references without anything else""")
+            """provided these references {references_text}. I'd appreciate it if you could ensure they are correctly formatted according to the APA style guidelines. Just return the list of references without anything else""")
         chat_prompt = ChatPromptTemplate.from_messages(
             [system_message_prompt, human_message_prompt])
 

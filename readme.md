@@ -36,12 +36,6 @@ Explore our [User Guide](docs/user_guide.md) to discover how to maximize your ex
 
 <br>
 
-## **📖 Sample Results**
-
-Please see here for full documentation on:
-
-<br>
-
 ## **🏗️ Project Architecture**
 
 ![sketch](./docs/pics/project_architecture.png)
