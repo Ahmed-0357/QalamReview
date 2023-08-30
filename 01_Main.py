@@ -78,9 +78,9 @@ st.markdown('')
 # Footer
 st.markdown(
     """
-    💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/autoreviewpaper) provides in-depth guidance on how to make the most of QalamReview. 
+    💡 **Need assistance?** Our [user guide](https://github.com/Ahmed-0357/QalamReview/blob/main/docs/user_guide.md) provides in-depth guidance on how to make the most of QalamReview. 
     
-    🤝 **Keen on contributing to the project?** QalamReview stands strong as an open-source initiative. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/autoreviewpaper), fork the project, and begin your creative journey!
+    🤝 **Keen on contributing to the project?** QalamReview stands strong as an open-source initiative. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/QalamReview), fork the project, and begin your creative journey!
     
     ---
     👩‍💻 **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://www.linkedin.com/in/ahmed-abdulrahman-75b41a164/).
@@ -90,3 +90,12 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+
+# 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
+# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
+# cse_id = "90421513b2347450d"
+
+# A Comprehensive Review of Land Subsidence in Louisiana
+
+# Geology & Geophysics, Environmental Science & Ecology, Hydrology & Civil Engineering, Geospatial Analysis & Remote Sensing

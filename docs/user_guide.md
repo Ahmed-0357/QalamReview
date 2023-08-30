@@ -17,7 +17,9 @@ The main page allows configuring the core settings required for QalamReview to w
 
 **1. OpenAI API Key:** This API key enables integration with LLM models like GPT-3 and GPT-4. To obtain it, follow the simple steps given [here](https://gptforwork.com/help/gpt-for-docs/setup/create-openai-api-key). The key needs to be entered in the provided field.
 
-**2. Model Selection:** Users can choose between two options - **gpt-3.5** or **gpt-3.5 & gpt-4**. gpt-3.5 is faster and more cost-effective but gpt-3.5 & gpt-4 generates more accurate outputs for complex tasks like outline generation and narrative review writing.
+**2. Model Selection:** Users can choose between two options - **gpt-3.5** or **gpt-3.5 & gpt-4**. gpt-3.5 is faster and more cost-effective but gpt-3.5 & gpt-4 generates more accurate outputs for complex tasks like outline generation and narrative review writing. 
+
+be aware of pricing here.
 
 **3. Custom Search API Key (optional):** For utilizing the web search capability to find relevant papers, this API key is essential. It can be easily obtained from [here](https://developers.google.com/custom-search/v1/overview#api_key) by following these guidelines.
 

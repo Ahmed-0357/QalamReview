@@ -164,6 +164,11 @@ else:
                             time.sleep(to_sleep_r)
                             continue
                         else:
+                            # show to user
+                            st.json(output_summ)
+                            st.json(output_rele)
+                            st.markdown(
+                                '<hr style="border:1.5px solid #808080;">', unsafe_allow_html=True)
                             with open(summary_file_path, 'a', encoding='utf-8') as file:
                                 file.write(str(output_summ)+'\n\n')
                             with open(relevance_file_path, 'a', encoding='utf-8') as file:
@@ -256,26 +261,34 @@ else:
 
             # add references
             # concat refer df and remove duplicates
-            combined_refer_df = pd.concat(references_list, ignore_index=True)
-            combined_refer_df = combined_refer_df.drop_duplicates()
+            if references_list:  # in case no writeup, just return empty list of references
+                combined_refer_df = pd.concat(
+                    references_list, ignore_index=True)
 
-            # get text from df
-            refer_list = combined_refer_df.to_dict(
-                orient='records')
-            references_text = "\n\n".join(
-                str(item) for item in refer_list)
+                combined_refer_df = combined_refer_df.drop_duplicates()
 
-            # list of references (APA)
-            input_dict_refer = {'llm_model': chat,
-                                'references_text': references_text}
-            try:
-                output = manwri.references(
-                    **input_dict_refer)
-            except:
-                pass
+                # get text from df
+                refer_list = combined_refer_df.to_dict(
+                    orient='records')
+                references_text = "\n\n".join(
+                    str(item) for item in refer_list)
+
+                # list of references (APA)
+                input_dict_refer = {'llm_model': chat,
+                                    'references_text': references_text}
+                try:
+                    output = manwri.references(
+                        **input_dict_refer)
+                except:
+                    pass
+                else:
+                    manwri.add_text('References', 'Heading 1',
+                                    bold=True, size=12)
+                    manwri.add_text(output, 'Normal', size=11)
+
             else:
                 manwri.add_text('References', 'Heading 1', bold=True, size=12)
-                manwri.add_text(output, 'Normal', size=11)
+                manwri.add_text('', 'Normal', size=11)
 
             # save summary and relevancy of scholarly papers
             csv = summ_rele.to_csv(index=False)

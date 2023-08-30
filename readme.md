@@ -16,23 +16,19 @@ Explore our [User Guide](docs/user_guide.md) to discover how to maximize your ex
 
 <br>
 
-## **⚙️ Features and Workflow**
+## **🚀 Features and Workflow**
 
 ### **1. 📝 Outline Creation**
 
-- **User Provided:** QalamReview allows you to submit your personal outline.
-  
-- **Automated Generation:** The app produces a tailored outline for your paper.
+- QalamReview enables you to submit your own outline or utilize its automated capabilities to generate a custom-tailored outline for your paper.
 
 ### **2. 🔎 Web Search (Optional)**
 
-- **Broad Scanning:** Our application dives deep into the web, locating academic papers that align with your selected topic.
+- Conducts an extensive search on the web, meticulously identifying academic papers that precisely match your chosen subject.
   
 ### **3. 📜 Review Paper Generation**
 
-- **Dynamic Compilation:** Based on your provided or selected articles, the app assembles a cohesive narrative review paper.
-  
-- **Highlighted Insights:** Principal insights from the scholarly sources are clearly delineated, making your review robust and informative.
+- QalamReview intelligently summarizes uploaded articles and ranks them according to their alignment with your outline. Using the key findings from each article, it then assembles a cohesive narrative review paper.
 
 <br>
 
