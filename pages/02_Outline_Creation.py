@@ -64,9 +64,8 @@ else:
     # show and download sample
     with open(os.path.join('files', 'outline_sample.json'), 'r') as json_file:
         outline_sample = json_file.read()
-    if st.checkbox('Show example outline format'):
+    if st.toggle('Show example outline format'):
         st.json(outline_sample)
-
     # download outline sample
     json_str = json.dumps(outline_sample)
     b64 = base64.b64encode(json_str.encode()).decode()
@@ -77,9 +76,8 @@ else:
     # AI Generated Outline
     st.markdown("### 🧠 AI Generated Outline")
     st.markdown(
-        "If you wish to generate an outline for your paper using AI, check the botton below.")
-
-    if st.checkbox('Start AI generated outline'):
+        "If you wish to generate an outline for your paper using AI, check the toggle bottom below.")
+    if st.toggle('Start AI generated outline'):
         # st.markdown("#####")
         elaborate_user = st.text_area('Elaborate your needs (optional)',
                                       placeholder='''example: focus on comparing traditional and modern methods in the field, and include a detailed discussion on recent experimental results.''')

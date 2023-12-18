@@ -46,23 +46,6 @@ def generate_outline_prompt():
     return chat_prompt
 
 
-def search_terms_prompt():
-    """create prompt for most effective google search terms needed to look for academic papers from certain outlines 
-
-        Returns:
-        str: prompt string
-    """
-    system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You possess a solid foundation in the field(s) of {expertise_areas} along with an expert capability in academic research. You have the ability to identify and collate the most pertinent academic papers required for constructing narrative review paper on {subject}. Your forte lies in developing targeted Google search terms that align with the framework provided by the narrative review paper's outline")
-    human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """In alignment with the directives provided in the narrative review paper's outline "{outline}", your task is to give me only {num_search_terms} distinct Google search terms. These search terms should be designed to effectively lead to the most relevant academic papers for my narrative review paper. Please present these/this term(s) as a python list like this "[search_term1, search_term2, ...]". Do not add any explanation just ensure the output is a python list""")
-
-    chat_prompt = ChatPromptTemplate.from_messages(
-        [system_message_prompt, human_message_prompt])
-
-    return chat_prompt
-
-
 def google_search(search_term, api_key, cse_id, total_results=10, dateRestrict=None):
     """Perform a Google search using the Custom Search JSON API.
 

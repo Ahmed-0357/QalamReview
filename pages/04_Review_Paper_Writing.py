@@ -19,9 +19,6 @@ html_title = '<h1 align="center"> <b> 📜 Review Paper Writing </b></h1>'
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown('#')
 
-# st.write(st.session_state)
-
-
 # check session state
 if st.session_state['openai_api'] == '' or st.session_state['openai_model_opt'] == '':
     st.error(
@@ -65,12 +62,16 @@ else:
                 continue
 
     st.markdown("####")
-    st.markdown("### ⚙️ Manuscript Writeup Setting")
-    rel_score_cutoff = st.slider('🥇 Define the relevance score cutoff (0-100). Scores above 100 will skip sections write-ups.', min_value=0,
-                                 max_value=105, value=90, step=1)
+    summary_toggle = st.toggle('Summarize only')
+    if summary_toggle:
+        pass
+    else:
+        st.markdown("### ⚙️ Manuscript Writeup")
+        rel_score_cutoff = st.slider('🥇 Define the relevance score cutoff (0-100). Scores above 100 will skip sections write-ups.', min_value=0,
+                                     max_value=100, value=90, step=1)
 
-    papers_per_sub = st.slider('📄 Numbers of research papers utilized for composing each individual sub-subsection', min_value=3,
-                               max_value=50, value=10, step=1)
+        papers_per_sub = st.slider('📄 Numbers of research papers utilized for composing each individual sub-subsection', min_value=3,
+                                   max_value=50, value=10, step=1)
 
     generate_button = st.button('Start')
     if generate_button and not uploaded_papers:
