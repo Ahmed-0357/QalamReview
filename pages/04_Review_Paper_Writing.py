@@ -63,15 +63,15 @@ else:
 
     st.markdown("####")
     summary_toggle = st.toggle('Summarize only')
-    if summary_toggle:
-        pass
-    else:
+    if not summary_toggle:
         st.markdown("### ⚙️ Manuscript Writeup")
-        rel_score_cutoff = st.slider('🥇 Define the relevance score cutoff (0-100). Scores above 100 will skip sections write-ups.', min_value=0,
+        rel_score_cutoff = st.slider('🥇 Define the relevance score cutoff (0-100).', min_value=0,
                                      max_value=100, value=90, step=1)
 
         papers_per_sub = st.slider('📄 Numbers of research papers utilized for composing each individual sub-subsection', min_value=3,
                                    max_value=50, value=10, step=1)
+    else:
+        rel_score_cutoff, papers_per_sub = 100, 3  # in case of summary only
 
     generate_button = st.button('Start')
     if generate_button and not uploaded_papers:
@@ -91,6 +91,7 @@ else:
             '&')[0]+'-16k' if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k', 9
         chat = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                           temperature=0, model_name=model_name_s)
+
         # relevance model
         # chose model
         model_name_r = st.session_state['openai_model_opt'].split(
@@ -107,7 +108,8 @@ else:
         relevance_file_path = os.path.join(dir_name, relevance_file)
 
         # summary spinner
-        with st.spinner('**🚀 Working on summarizing the papers and ranking them. Please wait...**'):
+        working_on_text = " and ranking them." if not summary_toggle else "."
+        with st.spinner(f'**🚀 Working on summarizing the papers{working_on_text} Please wait...**'):
             # dir to and file to save summary data
             if os.path.exists(dir_name):
                 shutil.rmtree(dir_name)
@@ -123,14 +125,15 @@ else:
             # input dicts
             # input dict summary
             input_dict_summary = {'llm_model': chat, 'expertise_areas': st.session_state[
-                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}
+                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list, 'sum_only': summary_toggle}  # when sum_only, outlines as not used during summary
             # input dict relevance
             input_dict_relevance = {'llm_model': (chat_, chat), 'expertise_areas': st.session_state[
-                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list}  # chat is used as parser
+                'expertise_areas'], 'subject': st.session_state['paper_title'], 'outline': outline_list, 'sum_only': summary_toggle}  # chat is used as parser # when sum_only, rel value of 200 is assigned
 
             # loop through papers
+            working_on_text_ = "and generating relevance scores for " if not summary_toggle else ""
             for paper_path in os.listdir(papers_dir):
-                with st.spinner(f'Summarizing and generating relevance scores for {paper_path} ...'):
+                with st.spinner(f'Summarizing {working_on_text_}{paper_path} ...'):
                     # read paper content
                     loader = PyPDFLoader(
                         os.path.join(papers_dir, paper_path))
@@ -162,144 +165,159 @@ else:
                             output_rele = rele.relevancy_score(
                                 **input_dict_relevance)
                         except Exception as e:
-                            time.sleep(to_sleep_r)
+                            if not summary_toggle:  # in case of summary only, no rel sleep
+                                time.sleep(to_sleep_r)
                             continue
                         else:
                             # show to user
                             st.json(output_summ)
-                            st.json(output_rele)
+                            if not summary_toggle:
+                                st.json(output_rele)
                             st.markdown(
                                 '<hr style="border:1.5px solid #808080;">', unsafe_allow_html=True)
                             with open(summary_file_path, 'a', encoding='utf-8') as file:
                                 file.write(str(output_summ)+'\n\n')
                             with open(relevance_file_path, 'a', encoding='utf-8') as file:
                                 file.write(str(output_rele)+'\n\n')
-                            time.sleep(to_sleep_r)
+                            if not summary_toggle:  # in case of summary only, no rel sleep
+                                time.sleep(to_sleep_r)
 
-        with st.spinner('**✒️ Writing the narrative review paper. Please wait...**'):
-            df_relevancy = spw.load_and_process_df(relevance_file_path)
+        if summary_toggle:  # just show summary csv
+            # save summary of scholarly papers
             df_summary = spw.load_and_process_df(
                 summary_file_path, numeric=False)
+            # sort papers by year
+            df_summary.sort_values(by='year', inplace=True)
+            csv = df_summary.to_csv(index=False)
+            b64 = base64.b64encode(csv.encode()).decode()
+            href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary.csv">Download Papers Summaries (CSV)</a>'
+            st.markdown(href, unsafe_allow_html=True)
+        else:  # just show summary, relevance and paper writeup
+            with st.spinner('**✒️ Writing the narrative review paper. Please wait...**'):
+                df_relevancy = spw.load_and_process_df(relevance_file_path)
+                df_summary = spw.load_and_process_df(
+                    summary_file_path, numeric=False)
 
-            summ_rele = pd.concat([df_summary, df_relevancy], axis=1)
+                summ_rele = pd.concat([df_summary, df_relevancy], axis=1)
 
-            del df_relevancy
-            del df_summary
+                del df_relevancy
+                del df_summary
 
-            references_list = []
-            output_sections = []
-            manwri = spw.ManuscriptWriting()
-            for i in range(len(outline_list)):
-                with st.spinner(f'Writing section: {outline_list[i]} ...'):
-                    try:
-                        # relevance cutoff
-                        summ_rele_filtered = summ_rele[summ_rele[outline_list[i]] >= rel_score_cutoff].copy(
-                        )
-                        # sort papers by year
-                        summ_rele_filtered.sort_values(
-                            by='year', inplace=True)
-                    except Exception as e:
-                        st.write(e)
-                        continue
-                    else:
-                        summ_rele_filtered_copy = summ_rele_filtered.iloc[:int(
-                            papers_per_sub), :8].copy()
-                        # if filtered df is empty just add note
-                        if len(summ_rele_filtered_copy) == 0:
-                            output_sections.append(
-                                (outline_list[i], 'Scholarly papers do not provide enough information to write this section.'))
+                references_list = []
+                output_sections = []
+                manwri = spw.ManuscriptWriting()
+                for i in range(len(outline_list)):
+                    with st.spinner(f'Writing section: {outline_list[i]} ...'):
+                        try:
+                            # relevance cutoff
+                            summ_rele_filtered = summ_rele[summ_rele[outline_list[i]] >= rel_score_cutoff].copy(
+                            )
+                            # sort papers by year
+                            summ_rele_filtered.sort_values(
+                                by='year', inplace=True)
+                        except Exception as e:
+                            st.write(e)
+                            continue
                         else:
-                            # get text from df
-                            summ_rele_list = summ_rele_filtered_copy.to_dict(
-                                orient='records')
-                            summ_rele_text = "\n\n".join(
-                                str(item) for item in summ_rele_list)
-
-                            del summ_rele_filtered_copy
-                            del summ_rele_list
-
-                            # split text select llm model and set sleeping time
-                            if '&' in st.session_state['openai_model_opt']:
-                                text_splitter = TokenTextSplitter(
-                                    chunk_size=6600, chunk_overlap=0)
-                                llm_model = chat_
-                                to_sleep = 60
-                            else:
-                                text_splitter = TokenTextSplitter(
-                                    chunk_size=12000, chunk_overlap=0)
-                                llm_model = chat
-                                to_sleep = 9
-                            texts = text_splitter.split_text(
-                                summ_rele_text)
-
-                            # input dict writing
-                            input_dict_writing = {'llm_model': llm_model, 'expertise_areas': st.session_state[
-                                'expertise_areas'], 'subject': st.session_state['paper_title'], 'section': outline_list[i], 'texts': texts, 'to_sleep': to_sleep}
-                            try:
-                                output = manwri.section_writing(
-                                    **input_dict_writing)
-                            except Exception as e:
-                                time.sleep(to_sleep)
-                                continue
-                            else:
+                            summ_rele_filtered_copy = summ_rele_filtered.iloc[:int(
+                                papers_per_sub), :8].copy()
+                            # if filtered df is empty just add note
+                            if len(summ_rele_filtered_copy) == 0:
                                 output_sections.append(
-                                    (outline_list[i], output))
-                                time.sleep(to_sleep)
+                                    (outline_list[i], 'Scholarly papers do not provide enough information to write this section.'))
+                            else:
+                                # get text from df
+                                summ_rele_list = summ_rele_filtered_copy.to_dict(
+                                    orient='records')
+                                summ_rele_text = "\n\n".join(
+                                    str(item) for item in summ_rele_list)
 
-                                # references
-                                references_df = summ_rele_filtered.iloc[:int(
-                                    papers_per_sub), :4].copy()
-                                references_list.append(references_df)
+                                del summ_rele_filtered_copy
+                                del summ_rele_list
 
-            # merge all content and final write up
-            output_sections_result = {}
-            for keys, summary in [(tuple(j.strip() for j in i.split('-')), s) for i, s in output_sections]:
-                reduce(lambda d, key: d.setdefault(key, {}),
-                       keys[:-1], output_sections_result)[keys[-1]] = summary
+                                # split text select llm model and set sleeping time
+                                if '&' in st.session_state['openai_model_opt']:
+                                    text_splitter = TokenTextSplitter(
+                                        chunk_size=6600, chunk_overlap=0)
+                                    llm_model = chat_
+                                    to_sleep = 60
+                                else:
+                                    text_splitter = TokenTextSplitter(
+                                        chunk_size=12000, chunk_overlap=0)
+                                    llm_model = chat
+                                    to_sleep = 9
+                                texts = text_splitter.split_text(
+                                    summ_rele_text)
 
-            manwri.final_writeup(
-                st.session_state['paper_title'], output_sections_result)
+                                # input dict writing
+                                input_dict_writing = {'llm_model': llm_model, 'expertise_areas': st.session_state[
+                                    'expertise_areas'], 'subject': st.session_state['paper_title'], 'section': outline_list[i], 'texts': texts, 'to_sleep': to_sleep}
+                                try:
+                                    output = manwri.section_writing(
+                                        **input_dict_writing)
+                                except Exception as e:
+                                    time.sleep(to_sleep)
+                                    continue
+                                else:
+                                    output_sections.append(
+                                        (outline_list[i], output))
+                                    time.sleep(to_sleep)
 
-            # add references
-            # concat refer df and remove duplicates
-            if references_list:  # in case no writeup, just return empty list of references
-                combined_refer_df = pd.concat(
-                    references_list, ignore_index=True)
+                                    # references
+                                    references_df = summ_rele_filtered.iloc[:int(
+                                        papers_per_sub), :4].copy()
+                                    references_list.append(references_df)
 
-                combined_refer_df = combined_refer_df.drop_duplicates()
+                # merge all content and final write up
+                output_sections_result = {}
+                for keys, summary in [(tuple(j.strip() for j in i.split('-')), s) for i, s in output_sections]:
+                    reduce(lambda d, key: d.setdefault(key, {}),
+                           keys[:-1], output_sections_result)[keys[-1]] = summary
 
-                # get text from df
-                refer_list = combined_refer_df.to_dict(
-                    orient='records')
-                references_text = "\n\n".join(
-                    str(item) for item in refer_list)
+                manwri.final_writeup(
+                    st.session_state['paper_title'], output_sections_result)
 
-                # list of references (APA)
-                input_dict_refer = {'llm_model': chat,
-                                    'references_text': references_text}
-                try:
-                    output = manwri.references(
-                        **input_dict_refer)
-                except:
-                    pass
+                # add references
+                # concat refer df and remove duplicates
+                if references_list:  # in case no writeup, just return empty list of references
+                    combined_refer_df = pd.concat(
+                        references_list, ignore_index=True)
+
+                    combined_refer_df = combined_refer_df.drop_duplicates()
+
+                    # get text from df
+                    refer_list = combined_refer_df.to_dict(
+                        orient='records')
+                    references_text = "\n\n".join(
+                        str(item) for item in refer_list)
+
+                    # list of references (APA)
+                    input_dict_refer = {'llm_model': chat,
+                                        'references_text': references_text}
+                    try:
+                        output = manwri.references(
+                            **input_dict_refer)
+                    except:
+                        pass
+                    else:
+                        manwri.add_text('References', 'Heading 1',
+                                        bold=True, size=12)
+                        manwri.add_text(output, 'Normal', size=11)
+
                 else:
                     manwri.add_text('References', 'Heading 1',
                                     bold=True, size=12)
-                    manwri.add_text(output, 'Normal', size=11)
+                    manwri.add_text('', 'Normal', size=11)
 
-            else:
-                manwri.add_text('References', 'Heading 1', bold=True, size=12)
-                manwri.add_text('', 'Normal', size=11)
+                # save summary and relevancy of scholarly papers
+                csv = summ_rele.to_csv(index=False)
+                b64 = base64.b64encode(csv.encode()).decode()
+                href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary_relevancy.csv">Download Papers Summaries and Relevancy Scores (CSV)</a>'
+                st.markdown(href, unsafe_allow_html=True)
 
-            # save summary and relevancy of scholarly papers
-            csv = summ_rele.to_csv(index=False)
-            b64 = base64.b64encode(csv.encode()).decode()
-            href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary_relevancy.csv">Download Papers Summaries and Relevancy Scores (CSV)</a>'
-            st.markdown(href, unsafe_allow_html=True)
-
-            # save manuscript
-            with open(os.path.join('manuscript', 'narrative_review.docx'), 'rb') as f:
-                data = f.read()
-            bin_str = base64.b64encode(data).decode()
-            href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="narrative_review.docx">Download Final Narrative Review (DOCX)</a>'
-            st.markdown(href, unsafe_allow_html=True)
+                # save manuscript
+                with open(os.path.join('manuscript', 'narrative_review.docx'), 'rb') as f:
+                    data = f.read()
+                bin_str = base64.b64encode(data).decode()
+                href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="narrative_review.docx">Download Final Narrative Review (DOCX)</a>'
+                st.markdown(href, unsafe_allow_html=True)

@@ -97,6 +97,5 @@ button(username="ahmedabdulS", floating=False, width=221)
 # cse_id = "90421513b2347450d"
 
 # application of graph neural network in petroleum engineering
-# graph neural network in petroleum engineering,  graph neural network in reservoir engineering,  graph neural network in subsurface engineering
-
 # petroleum engineering, production engineering, reservoir engineering, drilling engineering, graph neural network, deep learning
+# graph neural network in petroleum engineering,  graph neural network in reservoir engineering,  graph neural network in subsurface engineering

@@ -64,7 +64,7 @@ class PaperSummary:
                 "limitations/gaps": ""}
         }
 
-    def paper_summary_prompt(self, p_type='once'):
+    def paper_summary_prompt(self, p_type='once', sum_only_check=False):
         """outlines creation prompt
         Args:
             p_type(str): type of summary can be either once, many1 or many2. many1&2 for long paper that can not summarized via the model 
@@ -73,11 +73,15 @@ class PaperSummary:
         """
 
         if p_type == 'once':
-            system_message_prompt = SystemMessagePromptTemplate.from_template("""Possessing a notable reputation as a researcher, and having exceptional skill in dissecting scholarly research papers, along with deep expertise in the field of {expertise_areas},
-            your task is to meticulously analyze the provided document. Your goal is to craft a succinct summary of this intricate information, while preserving the integrity, accuracy, and precision of key concepts from the original academic material.
-            
-            Keep in mind that this summary will be a crucial part of the narrative review paper on the subject of {subject} and structured following the provided outline {outline}. During the construction of the summary, ensure diligent cross-referencing with the outline. If any information aligns with a section from the outline and is discussed or mentioned in the paper, it is crucial to incorporate it into the
-            corresponding section of the summary in an appropriate manner.""")
+            if sum_only_check:
+                system_message_prompt = SystemMessagePromptTemplate.from_template("""Possessing a notable reputation as a researcher, and having exceptional skill in dissecting scholarly research papers, along with deep expertise in the field of {expertise_areas},
+                your task is to meticulously analyze the provided document. Your goal is to craft a succinct summary of this intricate information, while preserving the integrity, accuracy, and precision of key concepts from the original academic material.""")
+            else:
+                system_message_prompt = SystemMessagePromptTemplate.from_template("""Possessing a notable reputation as a researcher, and having exceptional skill in dissecting scholarly research papers, along with deep expertise in the field of {expertise_areas},
+                your task is to meticulously analyze the provided document. Your goal is to craft a succinct summary of this intricate information, while preserving the integrity, accuracy, and precision of key concepts from the original academic material.
+                
+                Keep in mind that this summary will be a crucial part of the narrative review paper on the subject of {subject} and structured following the provided outline {outline}. During the construction of the summary, ensure diligent cross-referencing with the outline. If any information aligns with a section from the outline and is discussed or mentioned in the paper, it is crucial to incorporate it into the
+                corresponding section of the summary in an appropriate manner.""")
 
             human_message_prompt = HumanMessagePromptTemplate.from_template("""Using the comprehensive content of the scholarly paper {paper_content}, your task is to distill, analyze, and categorize the information into two key structured sections: Metadata and Summary.
             
@@ -129,7 +133,8 @@ class PaperSummary:
         """
 
         if len(self.texts) == 1:
-            chat_prompt = self.paper_summary_prompt(p_type='once')
+            chat_prompt = self.paper_summary_prompt(
+                p_type='once', sum_only_check=kwargs.get('sum_only'))
             chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
 
             output = chain.run(expertise_areas=kwargs.get('expertise_areas'), subject=kwargs.get('subject'), outline=kwargs.get('outline'),
@@ -154,7 +159,8 @@ class PaperSummary:
 
                     time.sleep(9)
 
-            chat_prompt = self.paper_summary_prompt(p_type='once')
+            chat_prompt = self.paper_summary_prompt(
+                p_type='once', sum_only_check=kwargs.get('sum_only'))
             chain = LLMChain(llm=kwargs.get('llm_model'), prompt=chat_prompt)
             all_sections = ' '.join(list(section_summary.values()))
             output = chain.run(expertise_areas=kwargs.get('expertise_areas'), subject=kwargs.get('subject'), outline=kwargs.get('outline'),
@@ -211,19 +217,27 @@ class RelevanceAnalysis:
         Returns:
             dict: relevancy score
         """
-        relevance_format = {
-            i: "relevance score" for i in kwargs.get('outline')}
-        chat_prompt = self.relevancy_analysis_prompt()
-        chain = LLMChain(llm=kwargs.get('llm_model')[0], prompt=chat_prompt)
-        output = chain.run(expertise_areas=kwargs.get('expertise_areas'), paper_summary=self.paper_summary, outline=kwargs.get(
-            'outline'), subject=kwargs.get('subject'), relevance_format=relevance_format)
+        if kwargs.get('sum_only'):
+            output_dict = {
+                i: 0 for i in kwargs.get('outline')}
 
-        # parsing results
-        chat_prompt = self.data_parser_prompt()
-        chain = LLMChain(llm=kwargs.get('llm_model')[1], prompt=chat_prompt)
-        output = chain.run(text=output, relevance_format=relevance_format)
+        else:
+            relevance_format = {
+                i: "relevance score" for i in kwargs.get('outline')}
+            chat_prompt = self.relevancy_analysis_prompt()
+            chain = LLMChain(llm=kwargs.get('llm_model')
+                             [0], prompt=chat_prompt)
+            output = chain.run(expertise_areas=kwargs.get('expertise_areas'), paper_summary=self.paper_summary, outline=kwargs.get(
+                'outline'), subject=kwargs.get('subject'), relevance_format=relevance_format)
 
-        output_dict = ast.literal_eval(output)
+            # parsing results
+            chat_prompt = self.data_parser_prompt()
+            chain = LLMChain(llm=kwargs.get('llm_model')
+                             [1], prompt=chat_prompt)
+            output = chain.run(text=output, relevance_format=relevance_format)
+
+            output_dict = ast.literal_eval(output)
+
         return output_dict
 
 
