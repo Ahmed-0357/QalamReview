@@ -1,4 +1,7 @@
+import os
+
 import streamlit as st
+from PIL import Image
 from streamlit_extras.buy_me_a_coffee import button
 from streamlit_extras.switch_page_button import switch_page
 
@@ -6,11 +9,11 @@ from streamlit_extras.switch_page_button import switch_page
 st.set_page_config(page_title="QalamReview", page_icon="🖋️",     layout="centered",
                    initial_sidebar_state="expanded")
 
-# title
-html_title = '<h1 align="center"> <b> 🖋️ QalamReview </b></h1>'
 
-st.markdown(html_title, unsafe_allow_html=True)
-# title
+col1, col2, col3 = st.columns((1, 4, 1))
+with col2:
+    st.image(Image.open(os.path.join("files", "logo.png")))
+
 html_title = '<h2 align="center"> <b> draft a narrative review paper on your favorite topic </b></h2>'
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown('#')
@@ -73,7 +76,7 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
-st.markdown('<hr style="border:3px solid #ffc83d;">', unsafe_allow_html=True)
+st.markdown('<hr style="border:3px solid #c55a11;">', unsafe_allow_html=True)
 st.markdown('')
 # Footer
 st.markdown(
@@ -90,12 +93,3 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
-
-
-# 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
-# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
-# cse_id = "90421513b2347450d"
-
-# application of graph neural network in petroleum engineering
-# petroleum engineering, production engineering, reservoir engineering, drilling engineering, graph neural network, deep learning
-# graph neural network in petroleum engineering,  graph neural network in reservoir engineering,  graph neural network in subsurface engineering

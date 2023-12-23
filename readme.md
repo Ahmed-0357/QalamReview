@@ -1,4 +1,4 @@
-# **🖋️ QalamReview**
+<img src="files/logo.png" width="450" height="140">
 
 ## ⚡ **draft a narrative review paper on your favorite topic** ⚡
 
