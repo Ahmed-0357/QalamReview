@@ -36,7 +36,7 @@ openai_model_opt = st.sidebar.selectbox(
     'Model',
     ('gpt-3.5 (LOW COST)', 'gpt-3.5 & gpt-4 (BETTER RESULTS)'))
 
-openai_model_opt = 'gpt-3.5-turbo' if openai_model_opt == 'gpt-3.5 (LOW COST)' else 'gpt-3.5-turbo&gpt-4'
+openai_model_opt = 'gpt-3.5-turbo-1106' if openai_model_opt == 'gpt-3.5 (LOW COST)' else 'gpt-3.5-turbo-1106&gpt-4'
 
 
 st.sidebar.subheader('Google')
@@ -93,3 +93,12 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+
+# 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
+# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
+# cse_id = "90421513b2347450d"
+
+# application of graph neural network in petroleum engineering
+# petroleum engineering, production engineering, reservoir engineering, drilling engineering, graph neural network, deep learning
+# graph neural network in petroleum engineering,  graph neural network in reservoir engineering,  graph neural network in subsurface engineering

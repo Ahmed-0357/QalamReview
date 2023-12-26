@@ -88,14 +88,14 @@ else:
         # llm models instantiation
         # chose model --> (gpt-3.5 - summary)
         model_name_s, to_sleep_s = st.session_state['openai_model_opt'].split(
-            '&')[0]+'-16k' if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k', 9
+            '&')[0] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt'], 9
         chat = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                           temperature=0, model_name=model_name_s)
 
         # relevance model
         # chose model
         model_name_r = st.session_state['openai_model_opt'].split(
-            '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']+'-16k'
+            '&')[1] if '&' in st.session_state['openai_model_opt'] else st.session_state['openai_model_opt']
         to_sleep_r = 60 if '&' in st.session_state['openai_model_opt'] else 9
         chat_ = ChatOpenAI(openai_api_key=st.session_state['openai_api'],
                            temperature=0, model_name=model_name_r)
@@ -142,7 +142,7 @@ else:
                         page.page_content for page in pages)
 
                     # split paper token wise (12k token for gpt-3 and 28k gpt-4)
-                    if model_name_s == 'gpt-3.5-turbo-16k':
+                    if model_name_s == 'gpt-3.5-turbo-1106':
                         text_splitter = TokenTextSplitter(
                             chunk_size=12000, chunk_overlap=0)
                     # else:
