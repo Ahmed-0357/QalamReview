@@ -6,7 +6,7 @@
 [![GitHub star chart](https://img.shields.io/github/stars/Ahmed-0357/wafer_fault_detection?style=social)](https://star-history.com/#Ahmed-0357/wafer_fault_detection)
 [![Open Issues](https://img.shields.io/github/issues-raw/Ahmed-0357/wafer_fault_detection)](https://github.com/Ahmed-0357/wafer_fault_detection/issues)
 
-**In the vast world of academia, going through numerous research articles to draft a review can be daunting. QalamReview harnesses the power of large language models, allowing you to effortlessly compile insights and draft a narrative review paper on any topic of your choice.**
+**In the vast world of academia, navigating through a multitude of scholarly articles to compose a review paper can be an overwhelming task. QalamReview leverages the advanced capabilities of large language models to simplify the process of collecting essential information, enabling you to efficiently compose a narrative review on your selected topic.**
 
 <br>
 

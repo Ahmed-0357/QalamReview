@@ -29,23 +29,6 @@ journal_info_format = {
 }
 
 
-def generate_outline_prompt():
-    """outlines creation prompt
-
-        Returns:
-        str: prompt string
-    """
-    system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You have exceptional proficiency in the area(s) of {expertise_areas}, also you are specialized in creating outlines for narrative review papers that meet the rigorous standards of top academic journals")
-    human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """Create an outline for narrative review papers on the topic of "{subject}". Please ensure you integrate these specific criteria "{elaborate_user}" into your outline formation process. Follow this format: {outline_format}. For the final output, please structure the outline as a Python dictionary, also just give the python dictionary without anything else""")
-
-    chat_prompt = ChatPromptTemplate.from_messages(
-        [system_message_prompt, human_message_prompt])
-
-    return chat_prompt
-
-
 def google_search(search_term, api_key, cse_id, total_results=10, dateRestrict=None):
     """Perform a Google search using the Custom Search JSON API.
 
