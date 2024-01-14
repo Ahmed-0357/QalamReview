@@ -1,7 +1,9 @@
 from apiclient.discovery import build
-from langchain.prompts.chat import (ChatPromptTemplate,
-                                    HumanMessagePromptTemplate,
-                                    SystemMessagePromptTemplate)
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    SystemMessagePromptTemplate,
+)
 
 # outlines format
 outline_format = """{
@@ -25,8 +27,27 @@ journal_info_format = {
     "publishing date": "",
     "journal": "",
     "abstract": "",
-    "link": ""
+    "link": "",
 }
+
+
+def generate_outline_prompt():
+    """outlines creation prompt
+    Returns:
+    str: prompt string
+    """
+    system_message_prompt = SystemMessagePromptTemplate.from_template(
+        "You have exceptional proficiency in the area(s) of {expertise_areas}, also you are specialized in creating outlines for narrative review papers that meet the rigorous standards of top academic journals"
+    )
+    human_message_prompt = HumanMessagePromptTemplate.from_template(
+        """Create an outline for narrative review papers on the topic of "{subject}". Please ensure you integrate these specific criteria "{elaborate_user}" into your outline formation process. Follow this format: {outline_format}. For the final output, please structure the outline as a Python dictionary, also just give the python dictionary without anything else"""
+    )
+
+    chat_prompt = ChatPromptTemplate.from_messages(
+        [system_message_prompt, human_message_prompt]
+    )
+
+    return chat_prompt
 
 
 def google_search(search_term, api_key, cse_id, total_results=10, dateRestrict=None):
@@ -46,24 +67,30 @@ def google_search(search_term, api_key, cse_id, total_results=10, dateRestrict=N
     results = []
     for i in range(0, total_results, 10):
         start = i + 1
-        res = service.cse().list(q=search_term, cx=cse_id, start=start,
-                                 dateRestrict=dateRestrict).execute()
-        results.extend(res['items'])
+        res = (
+            service.cse()
+            .list(q=search_term, cx=cse_id, start=start, dateRestrict=dateRestrict)
+            .execute()
+        )
+        results.extend(res["items"])
     return results
 
 
 def search_parsing_prompt():
-    """parse google search items 
+    """parse google search items
 
-        Returns:
-        str: prompt string
+    Returns:
+    str: prompt string
     """
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        "You are an academic researcher specializing in data extraction with advanced skills in JSON and HTML parsing.")
+        "You are an academic researcher specializing in data extraction with advanced skills in JSON and HTML parsing."
+    )
     human_message_prompt = HumanMessagePromptTemplate.from_template(
-        """Given this JSON data "{paper_html}", extract and organize the information according to the following format "{journal_info_format}". If certain information isn't clear or is unavailable, insert "None". For the final output, make it as a python dictionary without anything else""")
+        """Given this JSON data "{paper_html}", extract and organize the information according to the following format "{journal_info_format}". If certain information isn't clear or is unavailable, insert "None". For the final output, make it as a python dictionary without anything else"""
+    )
 
     chat_prompt = ChatPromptTemplate.from_messages(
-        [system_message_prompt, human_message_prompt])
+        [system_message_prompt, human_message_prompt]
+    )
 
     return chat_prompt
