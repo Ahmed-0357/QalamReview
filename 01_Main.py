@@ -95,7 +95,7 @@ st.markdown(
     🤝 **Keen on contributing to the project?** QalamReview stands strong as an open-source initiative. If you're interested in contributing, just head over to our [GitHub](https://github.com/Ahmed-0357/QalamReview), fork the project, and begin your creative journey!
     
     ---
-    👨‍💻          **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://www.linkedin.com/in/ahmed-abdulrahman-75b41a164/).
+    👨‍💻              **About me:** I'm an AI enthusiast and dedicated researcher, I have a passion for making academic work more accessible and efficient. Learn more [about me](https://www.linkedin.com/in/ahmed-abdulrahman-75b41a164/).
     
     💖 **Support my work:** If you find value in this and want to contribute to my efforts, you can support me here.
     """
