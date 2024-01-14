@@ -66,7 +66,7 @@ if google_search_engine_id != "":
 # Action Buttons
 st.sidebar.markdown("")
 if st.sidebar.button("Start ✨"):
-    switch_page("Outline Creation")
+    switch_page("Create Outline")
 
 # Introduction about the app
 st.markdown(
@@ -102,3 +102,11 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+# 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
+# google_key = "AIzaSyByT_NHJkzlSj3SurOOvsNOEZ2WwC98qQY"
+# cse_id = "90421513b2347450d"
+
+# application of graph neural network in petroleum engineering
+# petroleum engineering, production engineering, reservoir engineering, drilling engineering, graph neural network, deep learning
+# graph neural network in petroleum engineering,  graph neural network in reservoir engineering,  graph neural network in subsurface engineering

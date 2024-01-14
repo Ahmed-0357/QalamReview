@@ -1,52 +1,36 @@
 I. Introduction:
-  A. Background:
-  - '1': Overview of CO2 storage in aquifers
-  - '2': Importance of CO2 storage in mitigating climate change
-  - '3': Challenges and limitations of CO2 storage in aquifers
-  B. Objective:
-  - '1': To investigate the impact of CO2 diffusion mechanism on underground CO2 storage
-      in aquifers
-  - '2': To review the current state-of-the-art research on CO2 diffusion mechanism
-  - '3': To identify research gaps and propose future research directions
-II. CO2 Diffusion Mechanism:
-  A. Theory:
-  - '1': Fundamental principles of CO2 diffusion mechanism
-  - '2': Factors affecting CO2 diffusion in aquifers
-  - '3': Mathematical models for describing CO2 diffusion mechanism
-  B. Experimental Studies:
-  - '1': Laboratory experiments on CO2 diffusion in aquifers
-  - '2': Field experiments on CO2 diffusion in aquifers
-  - '3': Comparison of laboratory and field results
-III. Impact of CO2 Diffusion Mechanism on CO2 Storage:
-  A. Effect on Storage Capacity:
-  - '1': Quantification of CO2 storage potential in aquifers with different diffusion
-      mechanisms
-  - '2': Effect of heterogeneity on storage capacity and diffusion mechanism
-  - '3': Comparison of CO2 storage capacity with diffusion-limited and concentration-limited
-      systems
-  B. Effect on Storage Security:
-  - '1': Risk assessment of CO2 leakage due to diffusion mechanism
-  - '2': Evaluation of geological factors and their impact on storage security
-  - '3': Recommendations for improving storage security for diffusive systems
-IV. State-of-the-Art Review:
-  A. Overview of Research:
-  - '1': Current trends and foci of research on CO2 diffusion mechanism and CO2 storage
-  - '2': Analysis of research methodologies and techniques
-  - '3': Identification of key findings and knowledge gaps in the literature
-  B. Critical Assessment:
-  - '1': Evaluation of strengths and limitations of current research on CO2 diffusion
-      and storage
-  - '2': Identification of inconsistencies and uncertainties in results and conclusions
-  - '3': Proposals for future research and improvement of existing methodologies and
-      techniques
-V. Conclusion:
-  A. Summary:
-  - '1': Overview of main findings and contributions of the review paper
-  - '2': Implications and significance of research for CO2 storage and climate change
-      mitigation
-  - '3': Recommendations for future research and policy-making
-  B. Limitations and Challenges:
-  - '1': Discussion of limitations and challenges of the review paper
-  - '2': Suggestions for improving future research and addressing limitations and
-      challenges
-  - '3': Potential impact of addressing limitations and challenges
+  A. Background of Carbon Storage:
+  - '1': State of global warming and the need for carbon storage.
+  - '2': 'Understanding carbon storage: Definition and historical development.'
+  - '3': Principal methods of carbon storage with focus on aquifers.
+  B. Importance and Scope of Review:
+  - '1': Overview on importance of CO2 storage in aquifers.
+  - '2': Impact of CO2 diffusion on aquifer storage.
+  - '3': Scope of review and structure of the paper.
+II. Diffusion Basics:
+  A. Understanding CO2 Diffusion Mechanism:
+  - '1': Concepts and theories involved in CO2 diffusion.
+  - '2': How diffusion mechanism affects CO2 storage.
+  - '3': Limitations and challenges in existing diffusion methods.
+  B. Existing Models on CO2 Diffusion in Aquifers:
+  - '1': Detailed discussion on current models.
+  - '2': Pros and cons of existing models.
+  - '3': Gaps in the literature and need for advanced models.
+III. CO2 Diffusion and Aquifer Storage:
+  A. Impact of CO2 Diffusion on Aquifer Properties:
+  - '1': How CO2 diffusion affects aquifer porosity and permeability.
+  - '2': Influence of CO2 diffusion on the structural integrity of aquifers.
+  - '3': Impact on aquifer's storage capacity.
+  B. Advances in Enhancing Aquifers Storage through CO2 Diffusion:
+  - '1': Changes in procedural and technical approaches.
+  - '2': Specific engineering case studies of successful implementation.
+  - '3': Potential risks and how to mitigate them.
+IV. Future Directions and Conclusion:
+  A. Future Research Directions:
+  - '1': Possible improvements and alternatives in CO2 diffusion methods.
+  - '2': Exploration of novel models and theories.
+  - '3': Future research recommendations.
+  B. Conclusion:
+  - '1': Summary of the paper's main points.
+  - '2': Implications of the study and its importance.
+  - '3': Concluding remarks on carbon storage in aquifers through CO2 diffusion.

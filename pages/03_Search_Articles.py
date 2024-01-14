@@ -57,7 +57,8 @@ else:
 
     # get years to look back
     years_back = st.slider(
-        "📅 Indicate the number of past years to encompass in your search",  min_value=1,
+        "📅 Indicate the number of past years to encompass in your search",
+        min_value=1,
         max_value=60,
         value=20,
         step=1,
@@ -85,8 +86,8 @@ else:
             for i in range(len(search_terms_list)):
                 k = search_terms_list[i]
                 with st.spinner(
-                    f"🔎 Searching for journal papers related to {k.lower()}. Please wait..
-                "):
+                    f'🔎 Searching for journal papers related to {k.lower()}. Please wait."
+                '):
                     list_dict = []
                     # google search
                     search_results = sos.google_search(
