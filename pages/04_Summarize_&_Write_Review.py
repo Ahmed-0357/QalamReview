@@ -16,7 +16,7 @@ import st_paper_writing_func as spw
 st.set_page_config(page_title="paper writing", page_icon="📜")
 
 # titles
-html_title = '<h1 align="center"> <b> 📜 Review Paper Writing </b></h1>'
+html_title = '<h1 align="center"> <b> 📜 Summary and Review Paper Creation </b></h1>'
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown("#")
 icon_ = "🚨"
@@ -37,9 +37,9 @@ elif (
         icon=icon_,
     )
 else:
-    st.markdown("### 📝 Journal Papers")
+    st.markdown("### 📝 Academic Papers")
     st.markdown(
-        "Upload the journal papers that will be utilized in the composition of your narrative review paper."
+        "Upload the academic papers that you intend to use for crafting your narrative review paper"
     )
 
     uploaded_papers = st.file_uploader(
@@ -74,9 +74,9 @@ else:
     st.markdown("####")
     summary_toggle = st.toggle("Summarize only")
     if not summary_toggle:
-        st.markdown("### ⚙️ Manuscript Writeup")
+        st.markdown("### ⚙️ Manuscript Writeup Settings")
         rel_score_cutoff = st.slider(
-            "🥇 Define the relevance score cutoff (0-100)",
+            "🥇 Set relevance score threshold (0-100)",
             min_value=0,
             max_value=100,
             value=90,
@@ -84,7 +84,7 @@ else:
         )
 
         papers_per_sub = st.slider(
-            "📄 Numbers of research papers utilized for composing each individual sub-subsectio",
+            "📄 Specify number of papers per subsection",
             min_value=3,
             max_value=50,
             value=10,
@@ -111,7 +111,7 @@ else:
             st.session_state["openai_model_opt"].split("&")[0]
             if "&" in st.session_state["openai_model_opt"]
             else st.session_state["openai_model_opt"],
-            9,
+            17,
         )
         chat = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
@@ -126,7 +126,7 @@ else:
             if "&" in st.session_state["openai_model_opt"]
             else st.session_state["openai_model_opt"]
         )
-        to_sleep_r = 60 if "&" in st.session_state["openai_model_opt"] else 9
+        to_sleep_r = 60 if "&" in st.session_state["openai_model_opt"] else 17
         chat_ = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
             temperature=0,
@@ -143,7 +143,7 @@ else:
         # summary spinner
         working_on_text = " and ranking them." if not summary_toggle else "."
         with st.spinner(
-            f"**🚀 Working on summarizing the papers{working_on_text} Please wait...*"
+            f"""**🚀 Working on summarizing the papers{working_on_text} Please wait...**"""
         ):
             # dir to and file to save summary data
             if os.path.exists(dir_name):
@@ -242,7 +242,7 @@ else:
             df_summary.sort_values(by="year", inplace=True)
             csv = df_summary.to_csv(index=False)
             b64 = base64.b64encode(csv.encode()).decode()
-            href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary.csv">Download Papers Summaries (CSV)</a>'
+            href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary.csv">Download Summaries of Academic Papers (CSV)</a>'
             st.markdown(href, unsafe_allow_html=True)
         else:  # just show summary, relevance and paper writeup
             with st.spinner(
@@ -307,7 +307,7 @@ else:
                                         chunk_size=12000, chunk_overlap=0
                                     )
                                     llm_model = chat
-                                    to_sleep = 9
+                                    to_sleep = 17
                                 texts = text_splitter.split_text(summ_rele_text)
 
                                 # input dict writing
@@ -387,7 +387,7 @@ else:
                 # save summary and relevancy of scholarly papers
                 csv = summ_rele.to_csv(index=False)
                 b64 = base64.b64encode(csv.encode()).decode()
-                href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary_relevancy.csv">Download Papers Summaries and Relevancy Scores (CSV)</a>'
+                href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary_relevancy.csv">Download Summaries of Academic Papers and Relevancy Scores (CSV)</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
                 # save manuscript

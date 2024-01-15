@@ -14,7 +14,7 @@
 
 ## **📖 Documentation**
 
-Explore our [User Guide](docs/user_guide.md) to discover how to maximize your experience with QalamReview.
+Explore the [User Guide](docs/user_guide.md) to discover how to maximize your experience with QalamReview.
 
 <br>
 

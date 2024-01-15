@@ -15,7 +15,9 @@ page_icon = ":mag_right:"
 st.set_page_config(page_title=page_title, page_icon=page_icon)
 
 # title
-html_title = '<h1 align="center"> <b> 🔎 Let Us Find The Most Relevant Papers </b></h1>'
+html_title = (
+    '<h1 align="center"> <b> 🔎 Let Us Find The Most Relevant Research Papers </b></h1>'
+)
 st.markdown(html_title, unsafe_allow_html=True)
 st.markdown("#")
 icon_ = "🚨"
@@ -45,9 +47,9 @@ elif (
         icon=icon_,
     )
 else:
-    st.markdown("### 📚🕵️ Scholarly Paper Search")
+    st.markdown("### 📚🕵️ Scholarly Article Explorer")
     st.markdown("")
-    st.markdown("🌍 Please enter search terms/search keywords (comma separated)")
+    st.markdown("🌍 Please enter your search terms/search keywords (comma separated)")
 
     input_search_terms = st.text_input(
         "",
@@ -86,8 +88,9 @@ else:
             for i in range(len(search_terms_list)):
                 k = search_terms_list[i]
                 with st.spinner(
-                    f'🔎 Searching for journal papers related to {k.lower()}. Please wait."
-                '):
+                    f"""🔎 Searching for journal papers related to {k.lower()}. Please wait...
+                """
+                ):
                     list_dict = []
                     # google search
                     search_results = sos.google_search(
@@ -120,11 +123,11 @@ else:
                             )
                             ppaper_dict = ast.literal_eval(ppaper)
                         except:
-                            time.sleep(5)
+                            time.sleep(8)
                             continue
                         else:
                             list_dict.append(ppaper_dict)
-                            time.sleep(5)
+                            time.sleep(8)
 
                     # display dfs
                     df = pd.DataFrame(list_dict)
@@ -157,7 +160,7 @@ else:
             df_final.insert(0, "ID", range(1, 1 + len(df_final)))
             df_final.reset_index(drop=True, inplace=True)
 
-            st.write("### 📑 Relevant Paper Lis")
+            st.write("### 📑 List of Relevant Paper")
             st.dataframe(df_final)
 
             # Convert DataFrame to CSV for download
