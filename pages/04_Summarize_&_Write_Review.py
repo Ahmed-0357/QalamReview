@@ -111,8 +111,8 @@ else:
             st.session_state["openai_model_opt"].split("&")[0]
             if "&" in st.session_state["openai_model_opt"]
             else st.session_state["openai_model_opt"],
-            17,
-        )
+            8,
+        )  #!
         chat = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
             temperature=0,
@@ -126,12 +126,12 @@ else:
             if "&" in st.session_state["openai_model_opt"]
             else st.session_state["openai_model_opt"]
         )
-        to_sleep_r = 60 if "&" in st.session_state["openai_model_opt"] else 17
+        to_sleep_r = 45 if "&" in st.session_state["openai_model_opt"] else 8
         chat_ = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
             temperature=0,
             model_name=model_name_r,
-        )
+        )  #!
 
         # summary file and dir
         dir_name = "summary"

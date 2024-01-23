@@ -111,7 +111,7 @@ else:
                         if "&" in st.session_state["openai_model_opt"]
                         else st.session_state["openai_model_opt"]
                     )
-                    time.sleep(10)
+                    time.sleep(2)  #!
 
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state["openai_api"],

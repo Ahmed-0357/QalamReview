@@ -123,11 +123,11 @@ else:
                             )
                             ppaper_dict = ast.literal_eval(ppaper)
                         except:
-                            time.sleep(8)
+                            time.sleep(3)  #!
                             continue
                         else:
                             list_dict.append(ppaper_dict)
-                            time.sleep(8)
+                            time.sleep(3)  #!
 
                     # display dfs
                     df = pd.DataFrame(list_dict)
