@@ -1,4 +1,5 @@
 envs
+.DS_Store
 *env*/**
 .idea*/**
 .vscode*/**
@@ -14,4 +15,3 @@ INSAR.drawio
 Dr_ahmed
 docs/user_guide__.md
 docs\user_guide__.md
-.DS_Store
