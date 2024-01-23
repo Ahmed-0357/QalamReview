@@ -2,7 +2,6 @@
 
 ## ⚡ **draft a narrative review paper on your favorite topic** ⚡
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Ahmed-0357/QalamReview/blob/main/LICENSE)
 [![GitHub star chart](https://img.shields.io/github/stars/Ahmed-0357/QalamReview?style=social)](https://star-history.com/#Ahmed-0357/QalamReview)
 [![Open Issues](https://img.shields.io/github/issues-raw/Ahmed-0357/QalamReview)](https://github.com/Ahmed-0357/QalamReview/issues)
 
