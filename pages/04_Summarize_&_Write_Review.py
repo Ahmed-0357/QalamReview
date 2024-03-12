@@ -108,11 +108,13 @@ else:
         # llm models instantiation
         # chose model --> (gpt-3.5 - summary)
         model_name_s, to_sleep_s = (
-            st.session_state["openai_model_opt"].split("&")[0]
-            if "&" in st.session_state["openai_model_opt"]
-            else st.session_state["openai_model_opt"],
-            8,
-        )  #!
+            (
+                st.session_state["openai_model_opt"].split("&")[0]
+                if "&" in st.session_state["openai_model_opt"]
+                else st.session_state["openai_model_opt"]
+            ),
+            17,
+        )
         chat = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
             temperature=0,
@@ -126,12 +128,12 @@ else:
             if "&" in st.session_state["openai_model_opt"]
             else st.session_state["openai_model_opt"]
         )
-        to_sleep_r = 45 if "&" in st.session_state["openai_model_opt"] else 8
+        to_sleep_r = 60 if "&" in st.session_state["openai_model_opt"] else 17
         chat_ = ChatOpenAI(
             openai_api_key=st.session_state["openai_api"],
             temperature=0,
             model_name=model_name_r,
-        )  #!
+        )
 
         # summary file and dir
         dir_name = "summary"
@@ -245,9 +247,7 @@ else:
             href = f'<a href="data:text/csv;base64,{b64}" download="papers_summary.csv">Download Summaries of Academic Papers (CSV)</a>'
             st.markdown(href, unsafe_allow_html=True)
         else:  # just show summary, relevance and paper writeup
-            with st.spinner(
-                "**✒️ Writing the narrative review paper. Please wait...**"
-            ):
+            with st.spinner("**✒️ Writing the narrative review paper. Please wait...**"):
                 df_relevancy = spw.load_and_process_df(relevance_file_path)
                 df_summary = spw.load_and_process_df(summary_file_path, numeric=False)
 

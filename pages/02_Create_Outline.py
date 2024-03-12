@@ -1,6 +1,5 @@
 import ast
 import base64
-import json
 import os
 import time
 
@@ -111,7 +110,7 @@ else:
                         if "&" in st.session_state["openai_model_opt"]
                         else st.session_state["openai_model_opt"]
                     )
-                    time.sleep(2)  #!
+                    time.sleep(10)
 
                     llm = ChatOpenAI(
                         openai_api_key=st.session_state["openai_api"],

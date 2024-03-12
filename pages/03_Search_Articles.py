@@ -123,11 +123,11 @@ else:
                             )
                             ppaper_dict = ast.literal_eval(ppaper)
                         except:
-                            time.sleep(3)  #!
+                            time.sleep(8)
                             continue
                         else:
                             list_dict.append(ppaper_dict)
-                            time.sleep(3)  #!
+                            time.sleep(8)
 
                     # display dfs
                     df = pd.DataFrame(list_dict)
@@ -143,9 +143,9 @@ else:
             # data cleaning (none, data and remove duplicates)
             df_final.replace("None", "", inplace=True)
             df_final["publishing date"] = df["publishing date"].apply(
-                lambda x: pd.to_datetime(x, errors="coerce")
-                if pd.notnull(x)
-                else pd.NaT
+                lambda x: (
+                    pd.to_datetime(x, errors="coerce") if pd.notnull(x) else pd.NaT
+                )
             )
             df_final["publishing date"] = df_final["publishing date"].dt.strftime(
                 "%d-%m-%Y"
