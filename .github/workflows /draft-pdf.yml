@@ -22,3 +22,4 @@ jobs:
           name: paper
           # Path to the output PDF
           path: paper/paper.pdf
+          
