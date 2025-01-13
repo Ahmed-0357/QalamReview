@@ -38,6 +38,21 @@ Explore the [User Guide](docs/user_guide.md) to discover how to maximize your ex
 
 <br>
 
+
+## **📦 Running the App**
+
+Follow these steps to set up and run the app:
+
+1. **Install Required Libraries**  
+   ```bash
+   pip install -r requirements.txt
+
+2. **Launch the App**
+   ```bash
+   streamlit run 01_Main.py
+
+
+
 ## **🤝 Contribution**
 
 As an open-source initiative, we deeply appreciate and encourage community contributions. Whether it's through introducing new features, optimizing our existing framework, or enriching our documentation, your involvement is invaluable to us.
@@ -51,15 +66,3 @@ As an open-source initiative, we deeply appreciate and encourage community contr
 - Enable extraction of tables, equations, and figures from academic papers.
 
 <br>
-
-## **🌟 Acknowledgements**
-
-
-
-
-
-## **📌 Cite**
-
-If you build upon this work, please cite our paper as follows.
-```
-```

@@ -25,7 +25,7 @@ The main interface of QalamReview is designed to enable users to input the neces
 
 **3. Custom Search API Key (optional):** For users who wish to access the app's web search function to discover relevant academic papers, acquiring this API key is crucial and it can be access [here](https://developers.google.com/custom-search/v1/overview#api_key) by following these guidelines.
 
-**4. Custom Search Engine ID (optional):** In addition to the API key, the search engine ID is also required to enable web search. To get this ID refer to [this](https://developers.google.com/custom-search/v1/overview#search_engine_id).
+**4. Custom Search Engine ID (optional):** In addition to the Custom Search API key, the search engine ID is also required to enable web search. To get this ID refer to [this](https://developers.google.com/custom-search/v1/overview#search_engine_id).
 
 <br>
 

@@ -102,3 +102,8 @@ st.markdown(
 )
 
 button(username="ahmedabdulS", floating=False, width=221)
+
+
+# application of graph neural network in petroleum engineering
+# petroleum engineering, production engineering, reservoir engineering, graph neural network, deep learning
+# make it with fewer sections and focus on reservoir simulation and production forecast
